@@ -84,7 +84,6 @@ crt0.o: crt0.c
 	$(OBJCOPY) -O elf32-littlearm $< $@
 	$(INSERT_CHECKSUM_INTO_ELF) $@
 
-
 #_startup.o must be first in link order- else LTO removes IRQ Handlers
 %.out: %.o $(LIBS) crt0.o _$(STAGE2BOOT)_stage2_boot.o
 	$(CC) $(CFLAGS) -T $(LINKSCRIPT) --specs=nano.specs -o $@ $^

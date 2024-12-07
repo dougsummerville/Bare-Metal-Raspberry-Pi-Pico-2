@@ -21,9 +21,9 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include <rp2040/ssi.h>
-#include <rp2040/resets.h>
-#include <rp2040/clocks.h>
+#include <rp2350/ssi.h>
+#include <rp2350/resets.h>
+#include <rp2350/clocks.h>
 #include <stdint.h>
 
 extern uint32_t __rom_copy_start, __ram_copy_start, __ram_copy_end;

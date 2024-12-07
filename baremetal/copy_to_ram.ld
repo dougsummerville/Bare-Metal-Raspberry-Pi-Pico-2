@@ -1,4 +1,4 @@
-/* Linker Script for Bare Metal Pi Pico with copy-to-ram bootloader
+/* Linker Script for Bare Metal Pi Pico 2 with copy-to-ram bootloader
  *
  * Copyright (c) 2022-2025 Douglas H. Summerville, Binghamton University 
  *

@@ -140,6 +140,7 @@ if elf_file_hdr.e_phentsize != 0x20 or elf_file_hdr.e_phnum == 0:
 diag("%s is a valid 32b ARM little-endian ELF file" % (args.file_name))
 
 # walk through PH entries looking for LOADable boot section
+boot_header_found = False
 try:
     elf_file.seek(elf_file_hdr.e_phoff)
 except:

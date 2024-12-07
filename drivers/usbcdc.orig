@@ -21,15 +21,15 @@
  */
 
 #include "usbcdc.h"
-#include <rp2040/resets.h>
-#include <rp2040/sio.h>
-#include <rp2040/io_bank0.h>
-#include <rp2040/io_qspi.h>
-#include <rp2040/uart.h>
-#include <rp2040/clocks.h>
-#include <rp2040/usb.h>
-#include <rp2040/pll.h>
-#include <rp2040/m0plus.h>
+#include <rp2350/resets.h>
+#include <rp2350/sio.h>
+#include <rp2350/io_bank0.h>
+#include <rp2350/io_qspi.h>
+#include <rp2350/uart.h>
+#include <rp2350/clocks.h>
+#include <rp2350/usb.h>
+#include <rp2350/pll.h>
+#include <rp2350/m33.h>
 
 #include <stdint.h>
 #include <stdbool.h>
@@ -553,9 +553,9 @@ void configure_usbcdc()
 		
 	//Enable USB IRQ (5) and set priority, clear pending for good measure
 	((uint32_t *)(0x20000000))[16+5]= (uint32_t)ISR5;
-	m0plus -> nvic_iser = M0PLUS_NVIC_ISER_SETENA(1<<5);
-	m0plus -> nvic_ipr1 = M0PLUS_NVIC_IPR1_IP_5(USB_IRQ_PRIORITY); 
-	m0plus -> nvic_icpr = M0PLUS_NVIC_ICPR_CLRPEND(1<<5);
+	m33 -> nvic_iser = M0PLUS_NVIC_ISER_SETENA(1<<5);
+	m33 -> nvic_ipr1 = M0PLUS_NVIC_IPR1_IP_5(USB_IRQ_PRIORITY); 
+	m33 -> nvic_icpr = M0PLUS_NVIC_ICPR_CLRPEND(1<<5);
 
 	//connect usb to phy (should be by default)
 	usbctrl -> usb_muxing = 

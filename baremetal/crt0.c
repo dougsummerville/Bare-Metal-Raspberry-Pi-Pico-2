@@ -1,4 +1,4 @@
-/* Baremetal startup code for the Raspberry Pi Pico
+/* Baremetal startup code for the Raspberry Pi Pico 2
  *
  * Copyright (c) 2022-2025 Douglas H. Summerville, Binghamton University 
  *
@@ -21,11 +21,11 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-#include <rp2040/clocks.h>
-#include <rp2040/m0plus.h>
-#include <rp2040/pll.h>
-#include <rp2040/resets.h>
-#include <rp2040/xosc.h>
+#include <rp2350/clocks.h>
+#include <rp2350/m33.h>
+#include <rp2350/pll.h>
+#include <rp2350/resets.h>
+#include <rp2350/xosc.h>
 
 #include <stdint.h>
 
@@ -49,7 +49,7 @@ _reset_init(void)
 	//having the linker calculate the VTOR value saves instructions here
 	//because,unfortunately,linker symbols are not constants at compile
 	//time so we can't get the preprocessor to do the math
-	m0plus -> vtor = (uint32_t)&__vector_table_offset_vtor;
+	m33 -> vtor = (uint32_t)&__vector_table_offset_vtor;
 	
 	//initialize stack from vector table at offset 0
 	asm("mov sp,%0"::"r"(__vector_table_offset));

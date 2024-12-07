@@ -1,8 +1,8 @@
 #include "led.h"
-#include <rp2040/resets.h>
-#include <rp2040/sio.h>
-#include <rp2040/io_bank0.h>
-#include <rp2040/pads_bank0.h>
+#include <rp2350/resets.h>
+#include <rp2350/sio.h>
+#include <rp2350/io_bank0.h>
+#include <rp2350/pads_bank0.h>
 
 #define LED_RESETS (RESETS_RESET_IO_BANK0_MASK | RESETS_RESET_PADS_BANK0_MASK)
 void configure_led( void )
