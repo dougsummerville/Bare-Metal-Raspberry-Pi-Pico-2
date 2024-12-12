@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Utility to convert a Pi Pico ARM32 ELF to UF2
+# Utility to convert a Pi Pico 2 ARM32 ELF to UF2
 
 # Copyright (c) 2022 Douglas H. Summerville (dsummer@binghamton.edu)
 #
@@ -35,7 +35,7 @@ class Uf2Record:
     magic_start0 = 0x0A324655
     magic_start1 = 0x9E5D5157
     flags        = 0x00002000
-    family_id    = 0xe48bff56
+    family_id    = 0xe48bff59
     magic_end    = 0x0AB16F30
     num_bytes    = 256  #Pico bootloader only accepts 256B records?
 

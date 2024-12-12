@@ -48,7 +48,7 @@ CFLAGSS = -ffreestanding -nostartfiles \
 	 -fmessage-length=0 -mcpu=$(TARGET) -mthumb -mfloat-abi=soft \
 	 -Os $(INCLUDES) $(IRQ)
 ASFLAGS = -mcpu=$(TARGET) -mthumb
-STAGE2BOOT=copy_to_ram
+STAGE2BOOT=execute_from_flash
 LINKSCRIPT=baremetal/$(STAGE2BOOT).ld 
 NUM_UF2S := $(shell  ls -dq *.uf2 2>/dev/null | wc -l)
 
@@ -65,7 +65,7 @@ usage:
 clean:
 	-rm -f *.o *.out *.bin *.raw *.elf *.uf2 *.tmp
 
-%_stage2_boot.o: %_stage2_boot.c
+%_init.o: %_init.c
 	$(CC) $(CFLAGSS) -c $< -o $@
 
 crt0.o: crt0.c
@@ -82,10 +82,10 @@ crt0.o: crt0.c
 
 %.elf: %.out 
 	$(OBJCOPY) -O elf32-littlearm $< $@
-	$(INSERT_CHECKSUM_INTO_ELF) $@
+	#$(INSERT_CHECKSUM_INTO_ELF) $@
 
 #_startup.o must be first in link order- else LTO removes IRQ Handlers
-%.out: %.o $(LIBS) crt0.o _$(STAGE2BOOT)_stage2_boot.o
+%.out: %.o $(LIBS) crt0.o _$(STAGE2BOOT)_init.o
 	$(CC) $(CFLAGS) -T $(LINKSCRIPT) --specs=nano.specs -o $@ $^
 	@echo Generated Program has the following segment sizes:
 	@$(OBJSIZE) $@

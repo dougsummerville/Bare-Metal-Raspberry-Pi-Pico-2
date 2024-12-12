@@ -34,15 +34,20 @@ extern uint32_t __vector_table_offset_vtor;
 extern uint32_t __vector_table_offset;
 extern uint32_t __system_entry_point,__system_entry_point_thumb;
 extern uint32_t __stack_top;
+extern uint32_t __block_loop_link_forward, __block_loop_link_reverse;
 extern uint32_t __bss_start, __bss_end;
 
 //Functions provided
-static void config_sys_clock();
+//static void config_sys_clock();
 
 //Functions needed
 extern void main();
 
+void _crt0(){
+	main();
+}
 /*Environment Initialization*/
+/*
 void __attribute__ ((naked,noreturn,section (".system_startup_code")))
 _reset_init(void)
 {
@@ -56,7 +61,7 @@ _reset_init(void)
 
 
 	//init clock
-	config_sys_clock();
+	//config_sys_clock();
 
 	//reset all peripherals except pll_sys
 	resets->set_reset = 0x01ffefff;
@@ -117,67 +122,7 @@ static void config_sys_clock()
 		continue;
 
 }
-
+*/
 
 //The default ISR to handle errant interrupts
 //Just block forever to prevent further damage
-void __attribute__((isr))  Default_Handler() 
-{
-	//Throw all peripherals into reset
-	resets -> reset = 0x1FFFFFFF;
-	//TODO: disable IRQ
-	//TODO: what if two CPUs are running?
-	//Sleep forever
-	//while(1)
-		//asm("WFI");//try to sleep forever
-}
-// Interrupt vector table: array of pointers to functions 
-
-#define RESERVED ((void *)0x44565352)
-void * const InterruptVector[] __attribute__ ((section(".vector_table"))) =  
-{
-	//stacktop and system entry point are configured by the boot2 stage
-	//so technically these are not needed.  They are here for consistency
-	&__stack_top, // Initial stack pointer
-	_reset_init,// Reset handler+thumb bit
-	Default_Handler, //NMI
-	Default_Handler, //HardFault
-	RESERVED,
-	RESERVED,
-	RESERVED,
-	RESERVED,
-	RESERVED,
-	RESERVED,
-	RESERVED,
-	Default_Handler, //SVC
-	RESERVED,
-	RESERVED,
-	Default_Handler, //PendSV
-	Default_Handler, //SysTick
-	Default_Handler, //IRQ0 TIMER_IRQ_0
-	Default_Handler, //IRQ1 TIMER_IRQ_1
-	Default_Handler, //IRQ2 TIMER_IRQ_2
-	Default_Handler, //IRQ3 TIMER_IRQ_3
-	Default_Handler, //IRQ4 PWM_IRQ_WRAP
-	Default_Handler, //IRQ5 USBCTRL_IRQ
-	Default_Handler, //IRQ6 XIP_IRQ
-	Default_Handler, //IRQ7 PIO0_IRQ_0
-	Default_Handler, //IRQ8 PIO0_IRQ_1
-	Default_Handler, //IRQ9 PIO1_IRQ_0
-	Default_Handler, //IRQ10 PIO1_IRQ_1
-	Default_Handler, //IRQ11 DMA_IRQ_0
-	Default_Handler, //IRQ12 DMA_IRQ_1
-	Default_Handler, //IRQ13 IO_IRQ_BANK0
-	Default_Handler, //IRQ14 IO_IRQ_QSPI
-	Default_Handler, //IRQ15 SIO_IRQ_PROC0
-	Default_Handler, //IRQ16 SIO_IRQ_PROC1
-	Default_Handler, //IRQ17 CLOCKS
-	Default_Handler, //IRQ18 SPI0
-	Default_Handler, //IRQ19 SPI1
-	Default_Handler, //IRQ20 UART0
-	Default_Handler, //IRQ21 UART1
-	Default_Handler, //IRQ22 ADC
-	Default_Handler, //IRQ23 I2C0
-	Default_Handler, //IRQ24 I2C1
-	Default_Handler  //IRQ25 RTC
-};

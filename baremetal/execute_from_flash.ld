@@ -36,68 +36,49 @@ MEMORY
  */
 GROUP(libgcc.a)
 
-
-/*This defines the entry point of the system*/
-ENTRY(__stage2_bootloader_start)
-
 /*Map sections to memory*/
 SECTIONS
 {
-	.boot : {
-		__stage2_bootloader_start = .;
-		KEEP(*(.stage_2_bootloader*))
-		. = 236;
-		__rom_copy_start = .;
+	.text : {
+		KEEP(*(.vector_table*))
+		KEEP(*(.start_block*))
+		__start_block_loc = .;
+		KEEP(*(.init))
+		*(.text*)
+		*(.rodata*)
+		__etext = .;
 	} > ROM
 
-	.text : {
-		. = ALIGN(256);
-		__ram_copy_start = .;
-		__vector_table_offset = .;
-		__vector_table_offset_vtor = __vector_table_offset >> 8;
-		KEEP(*(.vector_table*))
-		. = ALIGN(4);
-		KEEP(*(.start_block))
-		__start_block_loc = .;
-		KEEP(*(.system_startup_code))
-		. = ALIGN(4);
-		*(.text*)
-		. = ALIGN(4);
-		*(.rodata*)
-		. = ALIGN(4);
-		__etext = .;
-    } > RAM AT> ROM
-
         
-    .data :
-    {
-        __data = .;
-        *(.data*)
-        . = ALIGN(4);
-        __edata = .;
-	__ram_copy_end = .;
-	. = ALIGN(4) ;
-	KEEP (*(.end_block))
-	__end_block_loc = . ;
+	.data :
+	{
+		__ram_copy_start = .;
+		. = ALIGN(4);
+		__data = .;
+		*(.data*)
+		. = ALIGN(4);
+		__edata = .;
+		__ram_copy_end = .;
+		. = ALIGN(4);
+		KEEP (*(.end_block))
+		__end_block_loc = . ;
+	} >RAM AT> ROM
 
-    } >RAM AT> ROM
+	.bss (COPY):
+	{
+		. = ALIGN(4);
+		__bss_start = .;
+		*(.bss*)
+	} > RAM
+	__bss_end = .;
+	__end = .;
 
-    .bss (COPY):
-    {
-        . = ALIGN(4);
-        __bss_start = .;
-        *(.bss*)
-    } > RAM
-    __bss_end = .;
-    __end = .;
-    /* Set stack top to end of RAM */
     __stack_top = ORIGIN(RAM) + LENGTH(RAM);
     __block_loop_link_forward = __end_block_loc - __start_block_loc;
     __block_loop_link_reverse = __start_block_loc - __end_block_loc;
     /*Sanity Checks*/
     ASSERT( __ram_copy_end < ORIGIN(RAM) + LENGTH(RAM) - __min_stack_size__,
     "Program too large to fit in RAM")
-    /*TODO: check that bootloader is right size*/
     
 }
     

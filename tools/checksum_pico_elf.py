@@ -146,6 +146,7 @@ try:
 except:
     sys.exit("%s does not have a valid program header" % (args.i_file_name))
 
+headers=[]
 for i in range(0, elf_file_hdr.e_phnum):
     try:
         elf_prog_hdr = elf32_program_header._make(
@@ -154,18 +155,21 @@ for i in range(0, elf_file_hdr.e_phnum):
                 elf_file.read(struct.calcsize(elf32_program_header_format))
             )
         )
+        print(elf_prog_hdr)
+        if elf_prog_hdr.ph_type == 1:
+            headers.append(elf_prog_hdr)
     except:
         sys.exit("Error reading program header entries")
-    # check for 256B executable segment at start of flash
-    if elf_prog_hdr.ph_type == 1 and elf_prog_hdr.ph_paddr == 0x10000000:
+for elf_prog_hdr in headers:
+        elf_file.seek( elf_prog_hdr.ph_offset )
+        segment_data= elf_file.read( elf_prog_hdr.ph_memsize)
+        if segment_data.find((0xFFFFDED3).to_bytes(4,byteorder='little')) and segment_data.find((0xab123579).to_bytes(4,byteorder='little')) :
+            print("YES!!!!")
+            
         if elf_prog_hdr.ph_memsize == 256 and elf_prog_hdr.ph_flags & 0x5 == 5:
             boot_header_found = True
             boot_section_header = elf_prog_hdr
-            break
-        elif elf_prog_hdr.ph_memsize != 256:
-            sys.exit("Error: section at address 0x10000000 is not 256 bytes")
-        else:
-            sys.exit("Error: section at address 0x10000000 is not executable")
+
 if boot_header_found:
     diag("Found a valid padded stage2 boot section")
 else:
