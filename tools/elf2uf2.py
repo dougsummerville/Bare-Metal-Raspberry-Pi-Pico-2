@@ -2,7 +2,7 @@
 
 # Utility to convert a Pi Pico 2 ARM32 ELF to UF2
 
-# Copyright (c) 2022 Douglas H. Summerville (dsummer@binghamton.edu)
+# Copyright (c) 2022-2025 Douglas H. Summerville (dsummer@binghamton.edu)
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal

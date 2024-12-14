@@ -1,6 +1,6 @@
 # Makefile for Bare-metal Pi Pico C Environment
 #
-# Copyright (c) 2022-2025 Douglas H. Summerville, Binghamton University
+# Copyright (c) 2025 Douglas H. Summerville, Binghamton University
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to
@@ -19,9 +19,6 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 # IN THE SOFTWARE.
-
-
- 
 
 CC = arm-none-eabi-gcc
 AR = arm-none-eabi-ar
@@ -48,8 +45,9 @@ CFLAGSS = -ffreestanding -nostartfiles \
 	 -fmessage-length=0 -mcpu=$(TARGET) -mthumb -mfloat-abi=soft \
 	 -Os $(INCLUDES) $(IRQ)
 ASFLAGS = -mcpu=$(TARGET) -mthumb
-STAGE2BOOT=execute_from_flash
-LINKSCRIPT=baremetal/$(STAGE2BOOT).ld 
+#EXECUTE FROM can be flash or ram
+EXECUTEFROM=flash
+LINKSCRIPT=baremetal/execute_from_$(EXECUTEFROM).ld 
 NUM_UF2S := $(shell  ls -dq *.uf2 2>/dev/null | wc -l)
 
 .PHONY:	clean usage program board_plugged_in
@@ -85,7 +83,7 @@ crt0.o: crt0.c
 	#$(INSERT_CHECKSUM_INTO_ELF) $@
 
 #_startup.o must be first in link order- else LTO removes IRQ Handlers
-%.out: %.o $(LIBS) crt0.o _$(STAGE2BOOT)_init.o
+%.out: %.o $(LIBS) crt0.o _execute_from_$(EXECUTEFROM)_init.o
 	$(CC) $(CFLAGS) -T $(LINKSCRIPT) --specs=nano.specs -o $@ $^
 	@echo Generated Program has the following segment sizes:
 	@$(OBJSIZE) $@

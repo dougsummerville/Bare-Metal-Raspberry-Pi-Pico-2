@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2024 Douglas H. Summerville, Binghamton University 
+ * Copyright (c) 2022-2025 Douglas H. Summerville, Binghamton University 
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the "Software"),
@@ -378,7 +378,7 @@ static void prepare_in_buffer_on_ep( uint8_t ep )
 /*USB ISR
  *
  */
-void __attribute__((isr)) ISR5() 
+void USBCTRL_IRQ_Handler() 
 {
 	uint32_t ints_req = usbctrl -> ints; //read once saves repeated volatile loads
 	/*Received a USB reset 
@@ -536,7 +536,7 @@ void configure_usbcdc()
 		continue;
 	
 	//Change divider to 1.0
-	clocks -> clk_sys_div  =  0x00000100; //1.0
+	clocks -> clk_usb_div  =  CLOCKS_CLK_USB_DIV_INT(1);
 	
 	/*
 	 * USB Config
@@ -553,11 +553,9 @@ void configure_usbcdc()
 		((uint32_t *)USB_DPRAM_OFFSET)[i]=0;
 		
 	//Enable USB IRQ (5) and set priority, clear pending for good measure
-	((uint32_t *)(0x20000000))[16+5]= (uint32_t)ISR5;
-	m33 -> nvic_iser = M0PLUS_NVIC_ISER_SETENA(1<<5);
-//TODO: this needs to use masking.
-	m33 -> nvic_ipr1 = M0PLUS_NVIC_IPR1_IP_5(USB_IRQ_PRIORITY); 
-	m33 -> nvic_icpr = M0PLUS_NVIC_ICPR_CLRPEND(1<<5);
+	m33 -> nvic_iser0 = (1<<14);
+	m33 -> nvic_ipr3 = (m33 -> nvic_ipr3 & ~ M33_NVIC_IPR3_PRI_N2_MASK) | M33_NVIC_IPR3_PRI_N2(USB_IRQ_PRIORITY); 
+	m33 -> nvic_icpr0 = (1<<14);
 
 	//connect usb to phy (should be by default)
 	usbctrl -> usb_muxing = 
@@ -568,13 +566,12 @@ void configure_usbcdc()
 		|USBCTRL_USB_PWR_VBUS_DETECT_OVERRIDE_EN(1);
 
 	//Enable controller in device mode
-	usbctrl -> main_ctrl = 
-		 USBCTRL_MAIN_CTRL_CONTROLLER_EN(1) 
-		| USBCTRL_MAIN_CTRL_HOST_NDEVICE(0);
+	usbctrl -> main_ctrl = USBCTRL_MAIN_CTRL_CONTROLLER_EN(1) ;
+
 	//IRQ enabled for endpoint 0
-	//usbctrl -> set_sie_ctrl = USBCTRL_SIE_CTRL_EP0_INT_1BUF_MASK;
 	usbctrl -> sie_ctrl = USBCTRL_SIE_CTRL_EP0_INT_1BUF(1)
 		| USBCTRL_SIE_CTRL_RPU_OPT_MASK;
+
 	usbctrl -> set_inte = 
 		 USBCTRL_INTE_BUS_RESET(1)
 	 	|USBCTRL_INTE_SETUP_REQ(1)

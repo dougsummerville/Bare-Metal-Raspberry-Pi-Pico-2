@@ -38,13 +38,67 @@ extern uint32_t __block_loop_link_forward, __block_loop_link_reverse;
 extern uint32_t __bss_start, __bss_end;
 
 //Functions provided
-//static void config_sys_clock();
+static void config_sys_clock();
 
 //Functions needed
 extern void main();
 
 void _crt0(){
+	config_sys_clock();
+	//clear BSS
+	uint32_t *p = &__bss_start;
+	while( p < &__bss_end )
+		*p++ = 0;
 	main();
+}
+static void config_sys_clock()
+{
+	//disable RESUS since it's meant for debugging
+	clocks -> clk_sys_resus_ctrl = 0;
+
+	//Turn on the XOSC and wait for it to stabilize
+	xosc -> ctrl =  XOSC_CTRL_FREQ_RANGE(0xaa0);	
+	xosc -> ctrl = XOSC_CTRL_ENABLE(0xfab) ;	
+	while( ((xosc -> status) & XOSC_STATUS_STABLE_MASK) == 0 )
+		continue;
+	
+
+	//Reset PLL so we can (re)configure
+	resets -> set_reset  =  RESETS_RESET_PLL_SYS_MASK;
+	resets -> clr_reset  =  RESETS_RESET_PLL_SYS_MASK;
+	while(!(resets -> reset_done & RESETS_RESET_DONE_PLL_SYS_MASK))
+		continue;
+
+	//config SYS PLL for 100 MHz CPU clock
+	pll_sys -> cs = PLL_SYS_CS_REFDIV(1);
+	pll_sys -> fbdiv_int = 125; //12MHz x 125 FCO = 1596 MHz
+	//disable power save bits to start PLL
+	pll_sys -> clr_pwr = PLL_SYS_PWR_PD_MASK | PLL_SYS_PWR_VCOPD_MASK;
+	//wait for PLL to lock
+	while( !((pll_sys->cs) & PLL_SYS_CS_LOCK_MASK))
+		continue;
+	//config post dividers for divide-by-6-by-2, which gets PLL ouput
+	//to 125*12/6/2 = 125 MHz
+	pll_sys -> prim  =  PLL_SYS_PRIM_POSTDIV1(5) | PLL_SYS_PRIM_POSTDIV2(2);
+	pll_sys -> clr_pwr = PLL_SYS_PWR_POSTDIVPD_MASK;
+	
+	//switch the glitchless mux to PLL
+	//clocks -> clr_clk_sys_ctrl = CLOCKS_CLK_SYS_CTRL_SRC_MASK;
+	clocks -> clk_sys_ctrl = CLOCKS_CLK_SYS_CTRL_AUXSRC(3) | CLOCKS_CLK_SYS_CTRL_SRC(1)  ;
+	//Change divider to 1.0
+	clocks -> clk_sys_div  =  0x00010000;
+	//poll the SELECTED register until the switch is completed
+	while( !(clocks -> clk_sys_selected ) )
+		continue;
+
+	//change the auxiliary mux select control
+	clocks -> clr_clk_sys_ctrl = CLOCKS_CLK_SYS_CTRL_AUXSRC_MASK;
+	//switch the glitchless mux back to the aux mux
+	clocks -> set_clk_sys_ctrl  = CLOCKS_CLK_SYS_CTRL_SRC_MASK;
+	//wait for good measure
+	while( !(clocks -> clk_sys_selected ) )
+		continue;
+
 }
 /*Environment Initialization*/
 /*

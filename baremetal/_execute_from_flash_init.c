@@ -38,6 +38,7 @@
 extern uint32_t __system_entry_point_thumb;
 extern uint32_t __stack_top;
 extern void _crt0();
+extern void turn_on_led();
 //Provides
 
 void __attribute__ ((section(".init"))) _system_entry_point()
@@ -45,15 +46,16 @@ void __attribute__ ((section(".init"))) _system_entry_point()
 	_crt0();
 }
 
-void __attribute__((isr))  _DEFAULT_Handler() 
+void __attribute__((interrupt))  _DEFAULT_Handler() 
 {
+	turn_on_led();
 	//Throw all peripherals into reset
-	resets -> reset = 0x1FFFFFFF;
+	//resets -> reset = 0x1FFFFFFF;
 	//TODO: disable IRQ
 	//TODO: what if two CPUs are running?
 	//Sleep forever
-	//while(1)
-		//asm("WFI");//try to sleep forever
+	while(1)
+		asm("WFI");//try to sleep forever
 }
 void __attribute__ ((weak, interrupt, alias("_DEFAULT_Handler"))) NMI_Handler();
 void __attribute__ ((weak, interrupt, alias("_DEFAULT_Handler"))) SYSTICK_Handler();

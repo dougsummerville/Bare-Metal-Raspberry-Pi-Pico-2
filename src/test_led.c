@@ -2,12 +2,12 @@
 
 int main ( void )
 {
-configure_led();
-    long unsigned i;
-    turn_on_led();
+	configure_led();
+	long unsigned i;
+
 	while(1){
-	for( i=0; i<2000000; i++);
-	toggle_led();
+		for( i=0; i<2000000; i++);
+		toggle_led();
 	}
-    return(0);
+	return(0);
 }

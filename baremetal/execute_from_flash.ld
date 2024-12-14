@@ -47,13 +47,14 @@ SECTIONS
 		*(.text*)
 		*(.rodata*)
 		__etext = .;
+		. = ALIGN(4);
+		__rom_copy_start = .;
 	} > ROM
 
         
 	.data :
 	{
 		__ram_copy_start = .;
-		. = ALIGN(4);
 		__data = .;
 		*(.data*)
 		. = ALIGN(4);

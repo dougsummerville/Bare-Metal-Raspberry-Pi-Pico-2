@@ -1,17 +1,16 @@
 #include "usbcdc.h"
+#include <rp2350/clocks.h>
+#include <rp2350/usb.h>
 
 int main()
 {
 	char c;
+	asm volatile ("cpsid i");
 	configure_usbcdc();
-	/* Calling usbcdc_putchar() will fail immediately after configure,
-	 * likely because the device has not yet enumerated.  The driver does
-	 * not poll until enumeration so as not to block
-	 */
-	while(1)
-	{
+	asm volatile ("cpsie i");
+
+	while(1){
 		if( usbcdc_getchar(&c))
 			usbcdc_putchar(c);
 	}
-	return 0;
 }
