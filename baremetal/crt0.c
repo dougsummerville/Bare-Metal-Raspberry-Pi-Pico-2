@@ -36,6 +36,7 @@ extern uint32_t __system_entry_point,__system_entry_point_thumb;
 extern uint32_t __stack_top;
 extern uint32_t __block_loop_link_forward, __block_loop_link_reverse;
 extern uint32_t __bss_start, __bss_end;
+extern uint32_t __ram_copy_start, __ram_copy_end, __rom_copy_start;
 
 //Functions provided
 static void config_sys_clock();
@@ -49,6 +50,10 @@ void _crt0(){
 	uint32_t *p = &__bss_start;
 	while( p < &__bss_end )
 		*p++ = 0;
+	uint32_t *to = &__ram_copy_start;
+	uint32_t *from = &__rom_copy_start;
+	while( p < &__ram_copy_end )
+		*p++ = *from++;
 	main();
 }
 static void config_sys_clock()
