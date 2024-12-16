@@ -53,25 +53,17 @@ class Uf2Record:
             Uf2Record.family_id, self.data, Uf2Record.magic_end)
 
 # pi pico stuff
-class rp2040:
+class rp2350:
     flash_start = 0x10000000
-    flash_end = 0X15000000
+    flash_end = 0X10400000
     sram_start = 0X20000000
-    sram_end = 0X20042000
-    xip_ram_start = 0X15000000
-    xip_ram_end = 0X15004000
-
-    def is_main_ram_address(A):
-        return A >= rp2040.sram_start and A < rp2040.sram_end
-
-    def is_xip_ram_address(A):
-        return A >= rp2040.xip_ram_start and A < rp2040.xip_ram_end
+    sram_end = 0X20082000
 
     def is_ram_address(A):
-        return rp2040.is_main_ram_address(A) or rp2040.is_xip_ram_address(A)
+        return A >= rp2350.sram_start and A < rp2350.sram_end
 
     def is_flash_address(A):
-        return A >= rp2040.flash_start and A < rp2040.flash_end
+        return A >= rp2350.flash_start and A < rp2350.flash_end
 
 
 # ELF32 stuff
@@ -195,8 +187,8 @@ for i in range(0, elf_file_hdr.e_phnum):
         sys.exit("Error reading program header entries")
 
     size = min(elf_prog_hdr.ph_filesz, elf_prog_hdr.ph_memsize)
-    memory = "ram" if rp2040.is_ram_address(elf_prog_hdr.ph_paddr) \
-        else "flash" if rp2040.is_flash_address(elf_prog_hdr.ph_paddr) \
+    memory = "ram" if rp2350.is_ram_address(elf_prog_hdr.ph_paddr) \
+        else "flash" if rp2350.is_flash_address(elf_prog_hdr.ph_paddr) \
         else "none"
     if memory == "ram":
         ram_segments_present = True
