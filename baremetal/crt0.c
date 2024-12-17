@@ -30,13 +30,11 @@
 #include <stdint.h>
 
 //Segment Locations Declared in Linker Script
-extern uint32_t __vector_table_offset_vtor;
-extern uint32_t __vector_table_offset;
-extern uint32_t __system_entry_point,__system_entry_point_thumb;
+extern uint32_t __system_entry_point;
 extern uint32_t __stack_top;
 extern uint32_t __block_loop_link_forward, __block_loop_link_reverse;
-extern uint32_t __bss_start, __bss_end;
-extern uint32_t __ram_copy_start, __ram_copy_end, __rom_copy_start;
+extern uint32_t __bss, __ebss;
+extern uint32_t __data, __edata, __etext;
 
 //Functions provided
 static void config_sys_clock();
@@ -47,13 +45,13 @@ extern void main();
 void _crt0(){
 	config_sys_clock();
 	//clear BSS
-	uint32_t *p = &__bss_start;
-	while( p < &__bss_end )
+	uint32_t *p = &__bss;
+	while( p < &__ebss)
 		*p++ = 0;
-	uint32_t *to = &__ram_copy_start;
-	uint32_t *from = &__rom_copy_start;
-	while( p < &__ram_copy_end )
-		*p++ = *from++;
+	uint32_t *to = &__data;
+	uint32_t *from = &__etext;
+	while( to < &__edata )
+		*to++ = *from++;
 	main();
 }
 static void config_sys_clock()
@@ -74,27 +72,24 @@ static void config_sys_clock()
 	while(!(resets -> reset_done & RESETS_RESET_DONE_PLL_SYS_MASK))
 		continue;
 
-	//config SYS PLL for 100 MHz CPU clock
+	//switch the glitchless mux to ref
+	clocks -> clr_clk_sys_ctrl =  CLOCKS_CLK_SYS_CTRL_SRC_MASK  ;
+	//poll the SELECTED register until the switch is completed
+	while( !(clocks -> clk_sys_selected ) )
+		continue;
+	//config SYS PLL for 150 MHz CPU clock
 	pll_sys -> cs = PLL_SYS_CS_REFDIV(1);
-	pll_sys -> fbdiv_int = 125; //12MHz x 125 FCO = 1596 MHz
+	pll_sys -> fbdiv_int = 125; //12MHz x 125 FCO = 1500 MHz
 	//disable power save bits to start PLL
 	pll_sys -> clr_pwr = PLL_SYS_PWR_PD_MASK | PLL_SYS_PWR_VCOPD_MASK;
 	//wait for PLL to lock
 	while( !((pll_sys->cs) & PLL_SYS_CS_LOCK_MASK))
 		continue;
-	//config post dividers for divide-by-6-by-2, which gets PLL ouput
-	//to 125*12/6/2 = 125 MHz
+	//config post dividers for divide-by-5-by-2, which gets PLL ouput
+	//to 1500/5/2 = 150 MHz
 	pll_sys -> prim  =  PLL_SYS_PRIM_POSTDIV1(5) | PLL_SYS_PRIM_POSTDIV2(2);
 	pll_sys -> clr_pwr = PLL_SYS_PWR_POSTDIVPD_MASK;
 	
-	//switch the glitchless mux to PLL
-	//clocks -> clr_clk_sys_ctrl = CLOCKS_CLK_SYS_CTRL_SRC_MASK;
-	clocks -> clk_sys_ctrl = CLOCKS_CLK_SYS_CTRL_AUXSRC(3) | CLOCKS_CLK_SYS_CTRL_SRC(1)  ;
-	//Change divider to 1.0
-	clocks -> clk_sys_div  =  0x00010000;
-	//poll the SELECTED register until the switch is completed
-	while( !(clocks -> clk_sys_selected ) )
-		continue;
 
 	//change the auxiliary mux select control
 	clocks -> clr_clk_sys_ctrl = CLOCKS_CLK_SYS_CTRL_AUXSRC_MASK;
@@ -103,6 +98,8 @@ static void config_sys_clock()
 	//wait for good measure
 	while( !(clocks -> clk_sys_selected ) )
 		continue;
+	//Change divider to 1.0
+	clocks -> clk_sys_div  =  CLOCKS_CLK_SYS_DIV_INT(1);
 
 }
 /*Environment Initialization*/

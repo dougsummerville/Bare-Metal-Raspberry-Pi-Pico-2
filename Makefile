@@ -28,13 +28,13 @@ OBJDUMP = arm-none-eabi-objdump
 OBJSIZE = arm-none-eabi-size
 ELF2UF2 = tools/elf2uf2.py
 INSERT_CHECKSUM_INTO_ELF = tools/checksum_pico_elf.py
-INCLUDES = -Idrivers -Ibaremetal/include -Ilib
+INCLUDES = -Idrivers -Ibaremetal/include -Ilib -Iinclude
 VPATH = src:drivers:baremetal:lib
-SYS_CLOCK = 125000000L
+SYS_CLOCK = 150000000L
 -include config.make
 
 
-OPTS = -Os -flto "-DSYS_CLOCK=$(SYS_CLOCK)" 
+OPTS = -O0 -flto "-DSYS_CLOCK=$(SYS_CLOCK)" 
 TARGET = cortex-m0
 CFLAGS = -ffreestanding -nostartfiles -nodefaultlibs \
 	 -ffunction-sections -fdata-sections -Wall \

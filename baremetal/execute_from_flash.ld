@@ -46,20 +46,17 @@ SECTIONS
 		KEEP(*(.init))
 		*(.text*)
 		*(.rodata*)
-		__etext = .;
 		. = ALIGN(4);
-		__rom_copy_start = .;
+		__etext = .;
 	} > ROM
 
         
 	.data :
 	{
-		__ram_copy_start = .;
 		__data = .;
 		*(.data*)
 		. = ALIGN(4);
 		__edata = .;
-		__ram_copy_end = .;
 		. = ALIGN(4);
 		KEEP (*(.end_block))
 		__end_block_loc = . ;
@@ -68,17 +65,17 @@ SECTIONS
 	.bss (COPY):
 	{
 		. = ALIGN(4);
-		__bss_start = .;
+		__bss = .;
 		*(.bss*)
 	} > RAM
-	__bss_end = .;
+	__ebss = .;
 	__end = .;
 
     __stack_top = ORIGIN(RAM) + LENGTH(RAM);
     __block_loop_link_forward = __end_block_loc - __start_block_loc;
     __block_loop_link_reverse = __start_block_loc - __end_block_loc;
     /*Sanity Checks*/
-    ASSERT( __ram_copy_end < ORIGIN(RAM) + LENGTH(RAM) - __min_stack_size__,
+    ASSERT( __ebss < ORIGIN(RAM) + LENGTH(RAM) - __min_stack_size__,
     "Program too large to fit in RAM")
     
 }

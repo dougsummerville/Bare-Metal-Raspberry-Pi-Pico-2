@@ -38,7 +38,6 @@
 extern uint32_t __system_entry_point_thumb;
 extern uint32_t __stack_top;
 extern void _crt0();
-extern void turn_on_led();
 //Provides
 
 void __attribute__ ((section(".init"))) _system_entry_point()
@@ -48,7 +47,6 @@ void __attribute__ ((section(".init"))) _system_entry_point()
 
 void __attribute__((interrupt))  _DEFAULT_Handler() 
 {
-	turn_on_led();
 	//Throw all peripherals into reset
 	//resets -> reset = 0x1FFFFFFF;
 	//TODO: disable IRQ
