@@ -30,11 +30,10 @@ ELF2UF2 = tools/elf2uf2.py
 INSERT_CHECKSUM_INTO_ELF = tools/checksum_pico_elf.py
 INCLUDES = -Idrivers -Ibaremetal/include -Ilib -Iinclude
 VPATH = src:drivers:baremetal:lib
-SYS_CLOCK = 150000000L
 -include config.make
 
 
-OPTS = -Os -flto "-DSYS_CLOCK=$(SYS_CLOCK)" 
+OPTS = -Os -flto
 TARGET = cortex-m33
 CFLAGS = -ffreestanding -nostartfiles -nodefaultlibs \
 	 -ffunction-sections -fdata-sections -Wall \
