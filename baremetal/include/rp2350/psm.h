@@ -162,7 +162,8 @@ typedef struct{
 #define PSM_FRCE_OFF_PROC_COLD_MASK PSM_FRCE_OFF_PROC_COLD(ALL1)
 
 /*WDSEL Register macros*/
-
+#define PSM_WDSEL_ALL(v) (((v)&0xFFFFFF)<<0)
+#define PSM_WDSEL_ALL_MASK PSM_WDSEL_ALL(ALL1) 
 #define PSM_WDSEL_PROC1(v) (((v)&0x1)<<24)
 #define PSM_WDSEL_PROC1_MASK PSM_WDSEL_PROC1(ALL1)
 #define PSM_WDSEL_PROC0(v) (((v)&0x1)<<23)

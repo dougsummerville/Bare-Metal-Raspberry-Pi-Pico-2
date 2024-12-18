@@ -38,12 +38,14 @@ extern uint32_t __data, __edata, __etext;
 
 //Functions provided
 static void config_sys_clock();
+static void config_ref_clock();
 
 //Functions needed
 extern void main();
 
 void _crt0(){
 	config_sys_clock();
+	config_ref_clock();
 	//clear BSS
 	uint32_t *p = &__bss;
 	while( p < &__ebss)
@@ -53,6 +55,13 @@ void _crt0(){
 	while( to < &__edata )
 		*to++ = *from++;
 	main();
+}
+static void config_ref_clock()
+{
+	//Clock to timers and tick generators
+	clocks -> clr_clk_ref_ctrl =  CLOCKS_CLK_REF_CTRL_SRC_MASK;
+	clocks -> set_clk_ref_ctrl =  CLOCKS_CLK_REF_CTRL_SRC(2); //XOSC
+	clocks -> clk_ref_div = CLOCKS_CLK_REF_DIV_INT(12); //divide-by-12 for 1MHz
 }
 static void config_sys_clock()
 {

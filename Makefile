@@ -34,8 +34,8 @@ SYS_CLOCK = 150000000L
 -include config.make
 
 
-OPTS = -O0 -flto "-DSYS_CLOCK=$(SYS_CLOCK)" 
-TARGET = cortex-m0
+OPTS = -Os -flto "-DSYS_CLOCK=$(SYS_CLOCK)" 
+TARGET = cortex-m33
 CFLAGS = -ffreestanding -nostartfiles -nodefaultlibs \
 	 -ffunction-sections -fdata-sections -Wall \
 	 -fmessage-length=0 -mcpu=$(TARGET) -mthumb -mfloat-abi=soft \
