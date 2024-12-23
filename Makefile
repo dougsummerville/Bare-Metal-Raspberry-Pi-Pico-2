@@ -25,7 +25,6 @@ OBJCOPY = arm-none-eabi-objcopy
 OBJDUMP = arm-none-eabi-objdump
 OBJSIZE = arm-none-eabi-size
 ELF2UF2 = tools/elf2uf2.py
-INSERT_CHECKSUM_INTO_ELF = tools/checksum_pico_elf.py
 INCLUDES = -Idrivers -Ibaremetal/include -Ilib -Iinclude
 VPATH = src:drivers:baremetal:lib
 -include config.make
@@ -76,7 +75,6 @@ crt0.o: crt0.c
 
 %.elf: %.out 
 	$(OBJCOPY) -O elf32-littlearm $< $@
-	#$(INSERT_CHECKSUM_INTO_ELF) $@
 
 #_startup.o must be first in link order- else LTO removes IRQ Handlers
 %.out: %.o $(LIBS) crt0.o _execute_from_$(EXECUTEFROM)_init.o
