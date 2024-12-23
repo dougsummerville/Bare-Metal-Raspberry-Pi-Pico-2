@@ -21,8 +21,6 @@
 # IN THE SOFTWARE.
 
 CC = arm-none-eabi-gcc
-AR = arm-none-eabi-ar
-AS = arm-none-eabi-as
 OBJCOPY = arm-none-eabi-objcopy
 OBJDUMP = arm-none-eabi-objdump
 OBJSIZE = arm-none-eabi-size
@@ -34,16 +32,15 @@ VPATH = src:drivers:baremetal:lib
 
 
 OPTS = -Os -flto
-TARGET = cortex-m33
+TARGET = armv8-m.main+fp+dsp
 CFLAGS = -ffreestanding -nostartfiles -nodefaultlibs \
 	 -ffunction-sections -fdata-sections -Wall \
-	 -fmessage-length=0 -mcpu=$(TARGET) -mthumb -mfloat-abi=soft \
+	 -fmessage-length=0 -march=$(TARGET) -mthumb -mfloat-abi=hard \
 	 $(DEBUG_OPTS) $(OPTS) $(INCLUDES) 
 CFLAGSS = -ffreestanding -nostartfiles \
 	 -ffunction-sections -fdata-sections -Wall \
-	 -fmessage-length=0 -mcpu=$(TARGET) -mthumb -mfloat-abi=soft \
+	 -fmessage-length=0 -march=$(TARGET) -mthumb -mfloat-abi=hard \
 	 -Os $(INCLUDES) $(IRQ)
-ASFLAGS = -mcpu=$(TARGET) -mthumb
 #EXECUTE FROM can be flash or ram
 EXECUTEFROM=flash
 LINKSCRIPT=baremetal/execute_from_$(EXECUTEFROM).ld 
