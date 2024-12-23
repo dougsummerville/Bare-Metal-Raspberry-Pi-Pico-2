@@ -25,3 +25,7 @@ LIBS="usbcdc.o" make test_usbcdc.uf2
 A program to test Newlib using the USB CDC serial driver is included.  To build the UF2 file, run the command
 
 LIBS="usbcdc.o" make test_newlib.uf2 
+
+A program that flashes the LED using SysTick.  To build the UF2 file, run the command
+
+LIBS="led.o systick.o" make test_systick.uf2
