@@ -624,11 +624,11 @@ void configure_usbcdc()
 	usbctrl -> set_sie_ctrl = USBCTRL_SIE_CTRL_PULLUP_EN(1);
 }
 
-_Bool usbcdc_getchar(char *c)
+int usbcdc_getchar(char *c)
 {
-	_Bool retval=true;
+	_Bool retval=1;
 	if( rxbuf_is_empty() )
-		retval=false;
+		retval=0;
 	else
 	{
 		*c = rx_buffer.buf[rx_buffer.tail];
@@ -636,10 +636,10 @@ _Bool usbcdc_getchar(char *c)
 	}
 	return retval;
 }
-_Bool usbcdc_putchar( char c)
+int usbcdc_putchar( char c)
 {
 	if( txbuf_is_full() )
-		return false;
+		return 0;
 	uint32_t primask;
 	__asm__ volatile ("MRS %0, primask" : "=r" (primask) );
 	asm volatile ("CPSID I");
@@ -647,5 +647,5 @@ _Bool usbcdc_putchar( char c)
 	tx_buffer.head = txhead_next();
 	prepare_out_to_host();
 	__asm__ volatile ("MSR primask, %0" : : "r" (primask) );
-	return true;
+	return 1;
 }

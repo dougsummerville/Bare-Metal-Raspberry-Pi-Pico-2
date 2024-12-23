@@ -65,17 +65,17 @@ SECTIONS
 	.bss (COPY):
 	{
 		. = ALIGN(4);
-		__bss = .;
+		__bss_start__ = .;
 		*(.bss*)
 	} > RAM
-	__ebss = .;
+	__bss_end__ = .;
 	__end = .;
 
     __stack_top = ORIGIN(RAM) + LENGTH(RAM);
     __block_loop_link_forward = __end_block_loc - __start_block_loc;
     __block_loop_link_reverse = __start_block_loc - __end_block_loc;
     /*Sanity Checks*/
-    ASSERT( __ebss < ORIGIN(RAM) + LENGTH(RAM) - __min_stack_size__,
+    ASSERT( __bss_end__ < ORIGIN(RAM) + LENGTH(RAM) - __min_stack_size__,
     "Program too large to fit in RAM")
     
 }

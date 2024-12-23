@@ -30,22 +30,21 @@ VPATH = src:drivers:baremetal:lib
 -include config.make
 
 
-OPTS = -Os -flto
+#enable Link time removal of unused functions
+LTOPTS = -fdata-sections -ffunction-sections -Xlinker -gc-sections
+#Uncomment if not using libc
+#LINKOPTS = -nostartfiles -nodefaultlibs
+LINKOPTS = -nostartfiles -specs=nano.specs
+OPTS = -Os 
+
 TARGET = armv8-m.main+fp+dsp
-CFLAGS = -ffreestanding -nostartfiles -nodefaultlibs \
-	 -ffunction-sections -fdata-sections -Wall \
-	 -fmessage-length=0 -march=$(TARGET) -mthumb -mfloat-abi=hard \
-	 $(DEBUG_OPTS) $(OPTS) $(INCLUDES) 
-CFLAGSS = -ffreestanding -nostartfiles \
-	 -ffunction-sections -fdata-sections -Wall \
-	 -fmessage-length=0 -march=$(TARGET) -mthumb -mfloat-abi=hard \
-	 -Os $(INCLUDES) $(IRQ)
+CFLAGS = -ffreestanding -march=$(TARGET) -mfloat-abi=hard \
+	  $(OPTS) $(INCLUDES) $(LTOPTS) -Wall
 #EXECUTE FROM can be flash or ram
 EXECUTEFROM=flash
 LINKSCRIPT=baremetal/execute_from_$(EXECUTEFROM).ld 
-NUM_UF2S := $(shell  ls -dq *.uf2 2>/dev/null | wc -l)
 
-.PHONY:	clean usage program board_plugged_in
+.PHONY:	clean usage program 
 
 # -----------------------------------------------------------------------------
 
@@ -57,12 +56,6 @@ usage:
 
 clean:
 	-rm -f *.o *.out *.bin *.raw *.elf *.uf2 *.tmp
-
-%_init.o: %_init.c
-	$(CC) $(CFLAGSS) -c $< -o $@
-
-crt0.o: crt0.c
-	$(CC) $(CFLAGSS) -c $< -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -76,25 +69,8 @@ crt0.o: crt0.c
 %.elf: %.out 
 	$(OBJCOPY) -O elf32-littlearm $< $@
 
-#_startup.o must be first in link order- else LTO removes IRQ Handlers
-%.out: %.o $(LIBS) crt0.o _execute_from_$(EXECUTEFROM)_init.o
-	$(CC) $(CFLAGS) -T $(LINKSCRIPT) --specs=nano.specs -o $@ $^
+%.out: %.o $(LIBS) crt0.o _execute_from_$(EXECUTEFROM)_init.o newlib_stubs.o
+	$(CC) $(CFLAGS) $(LINKOPTS) -T $(LINKSCRIPT) -o $@ $^
 	@echo Generated Program has the following segment sizes:
 	@$(OBJSIZE) $@
 
-board_plugged_in:
-ifeq ($(wildcard /media/$(USER)/RPI-RP2),)
-	$(error Raspberry PI not plugged in or not in program mode)
-else
-	@echo Raspberry Pi Pico found at $(wildcard /media/$(USER)/RPI-RP2)
-endif
-program: board_plugged_in
-ifeq ($(NUM_UF2S),0)
-	$(error No UF2 file exists in the current directory)
-else
-ifeq ($(NUM_UF2S),1)
-	cp $(wildcard *.uf2) /media/$(USER)/RPI-RP2/
-else
-	$(error There is more than one UF2 file in the current directory)  
-endif
-endif

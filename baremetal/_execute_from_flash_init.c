@@ -45,7 +45,7 @@ void __attribute__ ((section(".init"))) _system_entry_point()
 	_crt0();
 }
 
-void __attribute__((interrupt))  _DEFAULT_Handler() 
+void _DEFAULT_Handler() 
 {
 	//Throw all peripherals into reset
 	//resets -> reset = 0x1FFFFFFF;
