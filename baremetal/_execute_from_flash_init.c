@@ -22,18 +22,9 @@
  */
 
 #include <rp2350/resets.h>
-#include <rp2350/pads_qspi.h>
-#include <rp2350/xip.h>
-#include <rp2350/qmi.h>
 #include <stdint.h>
 
 
-#define CMD_WRITE_ENABLE 0x06
-#define CMD_READ_STATUS 0x05
-#define CMD_READ_STATUS2 0x35
-#define CMD_WRITE_STATUS 0x01
-#define SREG_DATA 0x02  
-			
 //Needs 
 extern uint32_t __system_entry_point_thumb;
 extern uint32_t __stack_top;
