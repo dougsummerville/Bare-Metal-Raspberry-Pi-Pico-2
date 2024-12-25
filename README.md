@@ -2,7 +2,7 @@
  A bare metal C programming environment for the Raspberry Pi Pico 2 with minimal dependences.  This is "true" minimalistic bare metal C with no SDK, CMSIS, or other layers between programmer and the hardware. It does, however, include header files defining all hardware registers.  Features include a USB CDC serial driver that uses no system RAM (only USB DPRAM) and provides a virtual COM port, header files that provide for standard port naming, stub files for Newlib-nano, and some examples.  To minimize dependences, the environment also includes python-based tool to create UF2 files.
 
 # Motivation
-  This environment was developed for use in an embedded systems course at Binghamton University.  Because of this use case, the number of example programs is limited.  While a software-development kit (SDK) facilitates rapid development and improves portability, it adds a layer of abstraction that hides many of the low-level hardware features, which is undesirable for bare-metal embedded systems education.  SDKs also produce bloated code. 
+  This environment was developed for use in an embedded systems course at Binghamton University.  Because of this use case, the number of example programs is purposely limited.  While a software-development kit (SDK) facilitates rapid development and improves portability, it adds a layer of abstraction that hides many of the low-level hardware features, which is undesirable for bare-metal embedded systems education since the skills have limited transferability.  SDKs also produce bloated code. 
 
  
 # Status

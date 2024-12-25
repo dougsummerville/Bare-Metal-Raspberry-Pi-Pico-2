@@ -187,7 +187,7 @@ void * const InterruptVector[] __attribute__ ((section(".vector_table"))) =
 	SPARE_IRQ_4_Handler, //IRQ50
 	SPARE_IRQ_5_Handler  //IRQ51
 };
-//There is no CRC on Pico2.  Start block and end block need to be present
+//There is no CRC on Pico2.  Linked block list must be present.  Using single self-linked block.
 static const uint32_t __attribute__((used,section (".start_block"))) __start_block[5]
 ={	0xFFFFDED3,
 	0x10210142, //change 2 to 1 for non-secure
@@ -195,13 +195,3 @@ static const uint32_t __attribute__((used,section (".start_block"))) __start_blo
 	0x00000000, //(uint32_t)&__block_loop_link_forward, //end_block - start_block
 	0xAB123579
 };
-/*
-//end block is optional but better than just start
-static const uint32_t __attribute__((used,section (".end_block"))) __end_block[5]
-={	0xFFFFDED3,
-	0x000001FE,
-	0x000001FF,
-	(uint32_t)&__block_loop_link_reverse, //start_block - end_block
-	0xAB123579
-};
-*/

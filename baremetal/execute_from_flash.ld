@@ -21,8 +21,6 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-EXTERN( __min_stack_size__ )
-PROVIDE( __min_stack_size__ = 1024);
 MEMORY
 {
   ROM  (rwx)    : ORIGIN = 0x10000000,  LENGTH = 4M 
@@ -30,19 +28,12 @@ MEMORY
   DPSRAM (rwx)  : ORIGIN = 0x50100000,  LENGTH = 4K
 }
 
-/*Libraries
- *libgcc is needed when using C features that do not map to
- *instructions in the ARM M0+ set
- */
-GROUP(libgcc.a)
-
 /*Map sections to memory*/
 SECTIONS
 {
 	.text : {
 		KEEP(*(.vector_table*))
 		KEEP(*(.start_block*))
-		__start_block_loc = .;
 		KEEP(*(.init))
 		*(.text*)
 		*(.rodata*)
@@ -57,26 +48,20 @@ SECTIONS
 		*(.data*)
 		. = ALIGN(4);
 		__edata = .;
-		. = ALIGN(4);
-		KEEP (*(.end_block))
-		__end_block_loc = . ;
 	} >RAM AT> ROM
 
 	.bss (COPY):
 	{
-		. = ALIGN(4);
 		__bss_start__ = .;
 		*(.bss*)
+		. = ALIGN(4);
 	} > RAM
 	__bss_end__ = .;
 	__end = .;
 
     __stack_top = ORIGIN(RAM) + LENGTH(RAM);
-    __block_loop_link_forward = __end_block_loc - __start_block_loc;
-    __block_loop_link_reverse = __start_block_loc - __end_block_loc;
     /*Sanity Checks*/
-    ASSERT( __bss_end__ < ORIGIN(RAM) + LENGTH(RAM) - __min_stack_size__,
-    "Program too large to fit in RAM")
+    ASSERT( __bss_end__ < ORIGIN(RAM) + LENGTH(RAM), "Program too large to fit in RAM")
     
 }
     
