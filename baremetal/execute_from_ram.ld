@@ -31,19 +31,26 @@ MEMORY
 /*Map sections to memory*/
 SECTIONS
 {
-	.text : {
-		KEEP(*(.vector_table*))
-		KEEP(*(.start_block*))
+	.boot2 : {
+		KEEP(*(.init_vector))
 		KEEP(*(.init))
-		*(.text*)
-		*(.rodata*)
 		. = ALIGN(4);
-		__etext = .;
+		KEEP(*(.start_block*))
+		*(.rodata*) 
+		. = ALIGN(4);
+		__text_copy_from = .;
 	} > ROM
 
-        
-	.data :
-	{
+	.text : {
+		__text_copy_to = .;
+		KEEP(*(.vector_table*))
+		__stext = .;
+		*(.text*)
+		. = ALIGN(4);
+		__etext = .;
+	} >RAM AT> ROM
+
+	.data : {
 		__data = .;
 		*(.data*)
 		. = ALIGN(4);

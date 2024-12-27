@@ -28,7 +28,6 @@
 #include <rp2350/xosc.h>
 
 #include <stdint.h>
-
 //Segment Locations Declared in Linker Script
 extern uint32_t __system_entry_point;
 extern uint32_t __stack_top;
@@ -52,7 +51,7 @@ void _crt0(){
 		*p++ = 0;
 	uint32_t *to = &__data;
 	uint32_t *from = &__etext;
-	while( to < &__edata )
+	while( to != from && to < &__edata )
 		*to++ = *from++;
 	main();
 }

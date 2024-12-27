@@ -41,7 +41,7 @@ TARGET = armv8-m.main+fp+dsp
 CFLAGS = -ffreestanding -march=$(TARGET) -mfloat-abi=hard \
 	  $(OPTS) $(INCLUDES) $(LTOPTS) -Wall
 #EXECUTE FROM can be flash or ram
-EXECUTEFROM=flash
+EXECUTEFROM=ram
 LINKSCRIPT=baremetal/execute_from_$(EXECUTEFROM).ld 
 
 .PHONY:	clean usage program 
