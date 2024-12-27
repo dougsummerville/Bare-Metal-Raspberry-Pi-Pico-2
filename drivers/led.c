@@ -14,7 +14,7 @@ void configure_led( void )
 
     pads_bank0 -> gpio25 = 
 	PADS_BANK0_GPIO25_OD(0) 
-	| PADS_BANK0_GPIO25_IE(1) 
+	| PADS_BANK0_GPIO25_IE(0) 
 	| PADS_BANK0_GPIO25_DRIVE(0) 
 	| PADS_BANK0_GPIO25_PUE(0) 
 	| PADS_BANK0_GPIO25_PDE(0) 
