@@ -23,52 +23,61 @@
 
 MEMORY
 {
-  ROM  (rx)    : ORIGIN = 0x10000000,  LENGTH = 4M 
-  RAM  (rwx)   : ORIGIN = 0x20000000,  LENGTH = 520K
-  DPSRAM (rw)  : ORIGIN = 0x50100000,  LENGTH = 4K
+  FLASH (rx)  : ORIGIN = 0x10000000,  LENGTH = 4M 
+  RAM   (rwx) : ORIGIN = 0x20000000,  LENGTH = 520K
 }
 
 /*Map sections to memory*/
 SECTIONS
 {
-	.boot2 : {
-		KEEP(*(.init_vector))
-		KEEP(*(.init))
-		. = ALIGN(4);
-		KEEP(*(.start_block*))
+	.boot : {
+		KEEP(_ram_init.o(.init_vector))
+		KEEP(_ram_init.o(.init))
+		KEEP(_ram_init.o(.start_block*))
+	} > FLASH
+
+	.rodata : {
+		*(.rodata) 
 		*(.rodata*) 
 		. = ALIGN(4);
-		__text_copy_from = .;
-	} > ROM
+	} > FLASH
+
+	.symbol : {
+		__text_lma = .;
+	} > FLASH
 
 	.text : {
-		__text_copy_to = .;
-		KEEP(*(.vector_table*))
-		__stext = .;
+		__text = .;
+		KEEP(_ram_init.o(.vector_table))
 		*(.text*)
 		. = ALIGN(4);
 		__etext = .;
-	} >RAM AT> ROM
+	} >RAM AT> FLASH
+	
+	.symbol : {
+		__etext_lma = .;
+	} > FLASH
 
 	.data : {
 		__data = .;
+		*(.data)
 		*(.data*)
 		. = ALIGN(4);
 		__edata = .;
-	} >RAM AT> ROM
+	} >RAM AT> FLASH
 
 	.bss (COPY):
 	{
-		__bss_start__ = .;
+		__bss = .;
 		*(.bss*)
 		. = ALIGN(4);
 	} > RAM
-	__bss_end__ = .;
+	__ebss = .;
 	__end = .;
 
     __stack_top = ORIGIN(RAM) + LENGTH(RAM);
     /*Sanity Checks*/
-    ASSERT( __bss_end__ < ORIGIN(RAM) + LENGTH(RAM), "Program too large to fit in RAM")
+    ASSERT( __ebss < ORIGIN(RAM) + LENGTH(RAM), "Program too large to fit in RAM")
     
 }
     

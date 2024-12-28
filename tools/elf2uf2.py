@@ -37,7 +37,7 @@ class Uf2Record:
     flags        = 0x00002000
     family_id    = 0xe48bff59
     magic_end    = 0x0AB16F30
-    num_bytes    = 256  #Pico bootloader only accepts 256B records?
+    num_bytes    = 256  #Pico bootloader only accepts 256B records
 
     def __init__(self, addr, data):
         self.block_num = Uf2Record.num_records

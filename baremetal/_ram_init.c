@@ -1,4 +1,4 @@
-/* Execute From Flash Startup  Sequence
+/* Execute From RAM Startup Sequence
  *
  * Copyright (c) 2025 Douglas H. Summerville, Binghamton University 
  *
@@ -22,20 +22,54 @@
  */
 
 #include <rp2350/resets.h>
+#include <rp2350/m33.h>
 #include <stdint.h>
 
 
 //Needs 
 extern uint32_t __stack_top;
-extern uint32_t __data_copy_start;
+extern uint32_t __text_lma;
+extern uint32_t __text;
+extern uint32_t __etext;
+
 extern void _crt0();
 //Provides
+void __INIT_Handler() ;
+void __system_entry_point();
+void * _VectorTable[];  
 
-void __attribute__ ((section(".init"))) _system_entry_point()
+/*Only used during boot stage 2 in case of error copying to RAM*/
+void * const __init_vectors__[] __attribute__ ((section(".init_vector"))) =  
 {
+	(void *)&__stack_top, // Initial stack pointer
+	(void *)__system_entry_point,// Reset handler+thumb bit
+	__INIT_Handler, //NMI
+	__INIT_Handler //HardFault
+};
+
+void __attribute__ ((section(".init"))) __system_entry_point()
+{
+	//copy text segment to RAM.  Rest done in crt0
+
+
+	uint32_t *from=&__text_lma;
+	uint32_t *to=&__text; 
+	while( to < &__etext )
+		*to++=*from++;
+	m33 -> vtor = (uint32_t) _VectorTable;
 	_crt0();
 }
 
+void __attribute__ ((section(".init"))) __INIT_Handler() 
+{
+	//Throw all peripherals into reset
+	//resets -> reset = 0x1FFFFFFF;
+	//TODO: disable IRQ
+	//TODO: what if two CPUs are running?
+	//Sleep forever
+	while(1)
+		asm("WFI");//try to sleep forever
+}
 void _DEFAULT_Handler() 
 {
 	//Throw all peripherals into reset
@@ -105,10 +139,12 @@ void __attribute__ ((weak, alias("_DEFAULT_Handler"))) SPARE_IRQ_4_Handler();
 void __attribute__ ((weak, alias("_DEFAULT_Handler"))) SPARE_IRQ_5_Handler();
 // Interrupt vector table: array of pointers to functions 
 #define RESERVED ((void *)0x44565352) //ASCII RSVD
-void * const InterruptVector[] __attribute__ ((section(".vector_table"))) =  
+void * _VectorTable[] __attribute__ ((section(".vector_table"))) =  
 {
+	//stacktop and system entry point are configured by the boot2 stage
+	//so technically these are not needed.  They are here for consistency
 	(void *)&__stack_top, // Initial stack pointer
-	(void *)_system_entry_point,// Reset handler
+	(void *)__system_entry_point,// Reset handler+thumb bit
 	NMI_Handler, //NMI
 	HARDFAULT_Handler, //HardFault
 	RESERVED,

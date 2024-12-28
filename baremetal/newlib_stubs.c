@@ -31,6 +31,10 @@
 #undef errno
 int errno;
 
+#ifndef MIN_STACK_REMAINING
+#define MIN_STACK_REMAINING 1024
+#endif
+
 extern int (*_stdout_putchar)( char c );
 extern int (*_stdin_getchar)( char *c );
 
@@ -158,10 +162,27 @@ int _lseek(int file, int ptr, int dir)
 	return 0;
 }
 
+/*Does not check for stack collision*/
 caddr_t _sbrk(int incr)
 {
-	errno = ENOMEM;
-	return (caddr_t) -1;
+	extern char __end;
+	static char *heap_end;
+	uint32_t stack_ptr;
+	char *prev_heap_end;
+
+	if (heap_end == 0) {
+		heap_end = &__end;
+	}
+	prev_heap_end = heap_end;
+	__asm__ volatile ("MRS %0, MSP" : "=r" (stack_ptr) );
+	if( (void *)(prev_heap_end + incr) > (void *)(stack_ptr - MIN_STACK_REMAINING) )
+	{
+		errno = ENOMEM;
+		return (caddr_t) -1;
+	}
+	heap_end += incr;
+	return (caddr_t) prev_heap_end;
+
 }
 
 int _stat(const char *file, struct stat *st)

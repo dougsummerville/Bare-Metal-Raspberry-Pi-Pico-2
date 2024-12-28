@@ -28,12 +28,9 @@
 #include <rp2350/xosc.h>
 
 #include <stdint.h>
-//Segment Locations Declared in Linker Script
-extern uint32_t __system_entry_point;
-extern uint32_t __stack_top;
-extern uint32_t __block_loop_link_forward, __block_loop_link_reverse;
-extern uint32_t __bss_start__, __bss_end__;
-extern uint32_t __data, __edata, __etext;
+//Segment Locations
+extern uint32_t __bss, __ebss;
+extern uint32_t __data, __edata, __etext_lma;
 
 //Functions provided
 static void config_sys_clock();
@@ -45,13 +42,14 @@ extern void main();
 void _crt0(){
 	config_sys_clock();
 	config_ref_clock();
+
 	//clear BSS
-	uint32_t *p = &__bss_start__;
-	while( p < &__bss_end__)
+	uint32_t *p = &__bss;
+	while( p < &__ebss)
 		*p++ = 0;
 	uint32_t *to = &__data;
-	uint32_t *from = &__etext;
-	while( to != from && to < &__edata )
+	uint32_t *from = &__etext_lma;
+	while( to < &__edata )
 		*to++ = *from++;
 	main();
 }

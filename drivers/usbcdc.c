@@ -89,7 +89,7 @@ static const uint8_t configuration_string_descriptor[18] =
 
 //Table lookup for Get Descriptor
 #define NUM_STRING_DESCRIPTORS 3
-const uint8_t *desc_table[NUM_STRING_DESCRIPTORS] = {
+const uint8_t * const desc_table[NUM_STRING_DESCRIPTORS] = {
     language_string_descriptor,
     manufacturer_string_descriptor,
     configuration_string_descriptor

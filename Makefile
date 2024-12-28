@@ -32,13 +32,11 @@ VPATH = src:drivers:baremetal:lib
 
 #enable Link time removal of unused functions
 LTOPTS = -fdata-sections -ffunction-sections -Xlinker -gc-sections
-#Uncomment if not using libc
-#LINKOPTS = -nostartfiles -nodefaultlibs
 LINKOPTS = -nostartfiles -specs=nano.specs
-OPTS = -Os 
+OPTS = -Os
 
 TARGET = armv8-m.main+fp+dsp
-CFLAGS = -ffreestanding -march=$(TARGET) -mfloat-abi=hard \
+CFLAGS = -ffreestanding -march=$(TARGET) -mfloat-abi=hard -mthumb \
 	  $(OPTS) $(INCLUDES) $(LTOPTS) -Wall
 #EXECUTE FROM can be flash or ram
 EXECUTEFROM=ram
@@ -69,8 +67,8 @@ clean:
 %.elf: %.out 
 	$(OBJCOPY) -O elf32-littlearm $< $@
 
-%.out: %.o $(LIBS) crt0.o _execute_from_$(EXECUTEFROM)_init.o newlib_stubs.o
+%.out: %.o $(LIBS) crt0.o _$(EXECUTEFROM)_init.o newlib_stubs.o
 	$(CC) $(CFLAGS) $(LINKOPTS) -T $(LINKSCRIPT) -o $@ $^
-	@echo Generated Program has the following segment sizes:
-	@$(OBJSIZE) $@
+	@echo Generated Program has the following segments:
+	@$(OBJSIZE) -Ax $@
 

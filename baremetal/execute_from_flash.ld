@@ -30,21 +30,22 @@ MEMORY
 /*Map sections to memory*/
 SECTIONS
 {
-	BOOT : {
-		KEEP(*(.vector_table*))
-		KEEP(*(.start_block*))
-		KEEP(*(.init))
+	.boot : {
+		KEEP(_flash_init.o(.vector_table))
+		KEEP(_flash_init.o(.start_block))
+		KEEP(_flash_init.o(.init))
 	} > FLASH
 
-	TEXT : {
+	.text : {
 		*(.text*)
 		*(.rodata*)
 		. = ALIGN(4);
 		__etext = .;
+		__etext_lma = .;
 	} > FLASH
 
         
-	DATA : {
+	.data : {
 		__data = .;
 		*(.data)
 		*(.data*)
@@ -53,16 +54,16 @@ SECTIONS
 	} > RAM AT> FLASH
 
 	BSS : {
-		__bss_start__ = .;
+		__bss = .;
 		*(.bss*)
 		. = ALIGN(4);
 	} > RAM
-	__bss_end__ = .;
+	__ebss = .;
 	__end = .;
 
     __stack_top = ORIGIN(RAM) + LENGTH(RAM);
     /*Sanity Checks*/
-    ASSERT( __bss_end__ < ORIGIN(RAM) + LENGTH(RAM), "Program too large to fit in RAM")
+    ASSERT( __ebss < ORIGIN(RAM) + LENGTH(RAM), "Program too large to fit in RAM")
     
 }
     
