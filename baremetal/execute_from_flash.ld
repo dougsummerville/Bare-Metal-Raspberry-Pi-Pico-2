@@ -23,35 +23,36 @@
 
 MEMORY
 {
-  ROM  (rx)    : ORIGIN = 0x10000000,  LENGTH = 4M 
-  RAM  (rwx)   : ORIGIN = 0x20000000,  LENGTH = 520K
-  DPSRAM (rw)  : ORIGIN = 0x50100000,  LENGTH = 4K
+  FLASH (rx)  : ORIGIN = 0x10000000,  LENGTH = 4M 
+  RAM   (rwx) : ORIGIN = 0x20000000,  LENGTH = 520K
 }
 
 /*Map sections to memory*/
 SECTIONS
 {
-	.text : {
+	BOOT : {
 		KEEP(*(.vector_table*))
 		KEEP(*(.start_block*))
 		KEEP(*(.init))
+	} > FLASH
+
+	TEXT : {
 		*(.text*)
 		*(.rodata*)
 		. = ALIGN(4);
 		__etext = .;
-	} > ROM
+	} > FLASH
 
         
-	.data :
-	{
+	DATA : {
 		__data = .;
+		*(.data)
 		*(.data*)
 		. = ALIGN(4);
 		__edata = .;
-	} >RAM AT> ROM
+	} > RAM AT> FLASH
 
-	.bss (COPY):
-	{
+	BSS : {
 		__bss_start__ = .;
 		*(.bss*)
 		. = ALIGN(4);
