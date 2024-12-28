@@ -294,7 +294,7 @@ static void prepare_out_to_host()
 {
 	//since this is called for every putchar and every USB ISR
 	//try to make common case return first
-	if( txbuf_is_empty() || usbram.ep_buffer_ctrl[2].in[0] & (1<<15 ) || usbctrl -> addr_endp == 0 )
+	if( txbuf_is_empty() || usbram.ep_buffer_ctrl[2].in[0] & (1<<15 ) || !usbcdc_is_enumerated() )
 		return;
 	uint8_t desc_len = min(MAX_PACKET_SIZE, txbuf_len());
 	for( unsigned i=0; i<desc_len; i++ )
@@ -648,4 +648,8 @@ int usbcdc_putchar( char c)
 	prepare_out_to_host();
 	__asm__ volatile ("MSR primask, %0" : : "r" (primask) );
 	return 1;
+}
+_Bool usbcdc_is_enumerated()
+{
+	return usbctrl -> addr_endp != 0 ;
 }

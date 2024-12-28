@@ -8,6 +8,8 @@ int main()
 	configure_usbcdc();
 	asm volatile ("cpsie i");
 
+	while(!usbcdc_getchar(&c) )
+		continue;
 
 	for( char *p=prompt; *p != 0; p++ )
 		usbcdc_putchar(*p);
