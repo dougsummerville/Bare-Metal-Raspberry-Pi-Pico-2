@@ -1,6 +1,6 @@
 /* Baremetal startup code for the Raspberry Pi Pico 2
  *
- * Copyright (c) 2022-2025 Douglas H. Summerville, Binghamton University 
+ * Copyright (c) 2025 Douglas H. Summerville, Binghamton University 
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the "Software"),
@@ -43,14 +43,15 @@ void _crt0(){
 	config_sys_clock();
 	config_ref_clock();
 
-	//clear BSS
-	uint32_t *p = &__bss;
-	while( p < &__ebss)
-		*p++ = 0;
+	/*Copy DATA segment*/
 	uint32_t *to = &__data;
 	uint32_t *from = &__etext_lma;
 	while( to < &__edata )
 		*to++ = *from++;
+	/*Clear BSS segment*/
+	to = &__bss;
+	while( to < &__ebss)
+		*to++ = 0;
 	main();
 }
 static void config_ref_clock()

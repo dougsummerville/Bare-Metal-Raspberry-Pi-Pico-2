@@ -39,10 +39,10 @@ TARGET = armv8-m.main+fp+dsp
 CFLAGS = -ffreestanding -march=$(TARGET) -mfloat-abi=hard -mthumb \
 	  $(OPTS) $(INCLUDES) $(LTOPTS) -Wall
 #EXECUTE FROM can be flash or ram
-EXECUTEFROM=ram
+EXECUTEFROM=flash
 LINKSCRIPT=baremetal/execute_from_$(EXECUTEFROM).ld 
 
-.PHONY:	clean usage program 
+.PHONY:	clean usage 
 
 # -----------------------------------------------------------------------------
 
@@ -70,5 +70,5 @@ clean:
 %.out: %.o $(LIBS) crt0.o _$(EXECUTEFROM)_init.o newlib_stubs.o
 	$(CC) $(CFLAGS) $(LINKOPTS) -T $(LINKSCRIPT) -o $@ $^
 	@echo Generated Program has the following segments:
-	@$(OBJSIZE) -Ax $@
+	@$(OBJSIZE) -A $@
 

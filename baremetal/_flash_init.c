@@ -38,9 +38,8 @@ void __attribute__ ((section(".init"))) _system_entry_point()
 void _DEFAULT_Handler() 
 {
 	//Throw all peripherals into reset
-	//resets -> reset = 0x1FFFFFFF;
-	//TODO: disable IRQ
-	//TODO: what if two CPUs are running?
+	resets -> reset = 0x1FFFFFFF;
+	asm("CPSID I");
 	//Sleep forever
 	while(1)
 		asm("WFI");//try to sleep forever

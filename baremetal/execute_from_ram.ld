@@ -1,6 +1,6 @@
 /* Linker Script for Bare Metal Pi Pico 2 with copy-to-ram bootloader
  *
- * Copyright (c) 2022-2025 Douglas H. Summerville, Binghamton University 
+ * Copyright (c) 2025 Douglas H. Summerville, Binghamton University 
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the "Software"),
@@ -30,13 +30,15 @@ MEMORY
 /*Map sections to memory*/
 SECTIONS
 {
+	__stack_top = ORIGIN(RAM) + LENGTH(RAM);
+
 	.boot : {
 		KEEP(_ram_init.o(.init_vector))
 		KEEP(_ram_init.o(.init))
 		KEEP(_ram_init.o(.start_block*))
 	} > FLASH
 
-	.rodata : {
+	RODATA : {
 		*(.rodata) 
 		*(.rodata*) 
 		. = ALIGN(4);
@@ -46,7 +48,7 @@ SECTIONS
 		__text_lma = .;
 	} > FLASH
 
-	.text : {
+	TEXT : {
 		__text = .;
 		KEEP(_ram_init.o(.vector_table))
 		*(.text*)
@@ -58,26 +60,25 @@ SECTIONS
 		__etext_lma = .;
 	} > FLASH
 
-	.data : {
+	DATA : {
 		__data = .;
 		*(.data)
 		*(.data*)
 		. = ALIGN(4);
 		__edata = .;
+		ASSERT( . < ORIGIN(FLASH) + LENGTH(FLASH), "Not enough flash memory for program");
 	} >RAM AT> FLASH
 
-	.bss (COPY):
+	BSS (COPY):
 	{
 		__bss = .;
 		*(.bss*)
 		. = ALIGN(4);
+		ASSERT( . < ORIGIN(RAM) + LENGTH(RAM), "Not enough RAM memory for program");
 	} > RAM
 	__ebss = .;
 	__end = .;
 
-    __stack_top = ORIGIN(RAM) + LENGTH(RAM);
-    /*Sanity Checks*/
-    ASSERT( __ebss < ORIGIN(RAM) + LENGTH(RAM), "Program too large to fit in RAM")
     
 }
     

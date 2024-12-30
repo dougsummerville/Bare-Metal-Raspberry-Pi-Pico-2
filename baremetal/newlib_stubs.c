@@ -166,7 +166,7 @@ int _lseek(int file, int ptr, int dir)
 caddr_t _sbrk(int incr)
 {
 	extern char __end;
-	static char *heap_end;
+	static char *heap_end=0;
 	uint32_t stack_ptr;
 	char *prev_heap_end;
 
@@ -175,6 +175,7 @@ caddr_t _sbrk(int incr)
 	}
 	prev_heap_end = heap_end;
 	__asm__ volatile ("MRS %0, MSP" : "=r" (stack_ptr) );
+	
 	if( (void *)(prev_heap_end + incr) > (void *)(stack_ptr - MIN_STACK_REMAINING) )
 	{
 		errno = ENOMEM;

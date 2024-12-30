@@ -1,6 +1,6 @@
 /* Linker Script for Bare Metal Pi Pico 2 with copy-to-ram bootloader
  *
- * Copyright (c) 2022-2025 Douglas H. Summerville, Binghamton University 
+ * Copyright (c) 2025 Douglas H. Summerville, Binghamton University 
  *
  * Permission is hereby granted, free of charge, to any person obtaining a 
  * copy of this software and associated documentation files (the "Software"),
@@ -36,7 +36,7 @@ SECTIONS
 		KEEP(_flash_init.o(.init))
 	} > FLASH
 
-	.text : {
+	TEXT : {
 		*(.text*)
 		*(.rodata*)
 		. = ALIGN(4);
@@ -45,7 +45,7 @@ SECTIONS
 	} > FLASH
 
         
-	.data : {
+	DATA : {
 		__data = .;
 		*(.data)
 		*(.data*)
@@ -53,17 +53,20 @@ SECTIONS
 		__edata = .;
 	} > RAM AT> FLASH
 
+	.dummy : {
+		ASSERT( . < ORIGIN(FLASH) + LENGTH(FLASH), "Not enough flash memory for program");
+	} > FLASH
+
 	BSS : {
 		__bss = .;
 		*(.bss*)
 		. = ALIGN(4);
+		ASSERT( . < ORIGIN(RAM) + LENGTH(RAM), "Not enough RAM memory for program");
 	} > RAM
 	__ebss = .;
 	__end = .;
 
     __stack_top = ORIGIN(RAM) + LENGTH(RAM);
-    /*Sanity Checks*/
-    ASSERT( __ebss < ORIGIN(RAM) + LENGTH(RAM), "Program too large to fit in RAM")
     
 }
     
