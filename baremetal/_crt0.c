@@ -33,19 +33,24 @@ extern uint32_t __bss, __ebss;
 extern uint32_t __data, __edata, __etext_lma;
 
 //Functions provided
-static void config_sys_clock();
-static void config_ref_clock();
+static void _config_sys_clock();
+static void _config_ref_clock();
 
 //Functions needed
 extern void main();
 
 void _crt0(){
-	config_sys_clock();
-	config_ref_clock();
+	_config_sys_clock();
+	_config_ref_clock();
+
+	/*Basic C initialization sequence.  The compiler cannot optimize these away
+	 * for empty DATA or BSS segments at compile time because linker symbols are 
+	 * unknown.
+	 */
 
 	/*Copy DATA segment*/
-	uint32_t *to = &__data;
-	uint32_t *from = &__etext_lma;
+	uint32_t *to= &__data;
+	uint32_t *from= &__etext_lma;
 	while( to < &__edata )
 		*to++ = *from++;
 	/*Clear BSS segment*/
@@ -54,14 +59,14 @@ void _crt0(){
 		*to++ = 0;
 	main();
 }
-static void config_ref_clock()
+static void _config_ref_clock()
 {
 	//Clock to timers and tick generators
 	clocks -> clr_clk_ref_ctrl =  CLOCKS_CLK_REF_CTRL_SRC_MASK;
 	clocks -> set_clk_ref_ctrl =  CLOCKS_CLK_REF_CTRL_SRC(2); //XOSC
 	clocks -> clk_ref_div = CLOCKS_CLK_REF_DIV_INT(12); //divide-by-12 for 1MHz
 }
-static void config_sys_clock()
+static void _config_sys_clock()
 {
 	//disable RESUS since it's meant for debugging
 	clocks -> clk_sys_resus_ctrl = 0;

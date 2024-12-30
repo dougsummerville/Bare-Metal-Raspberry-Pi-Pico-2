@@ -1,4 +1,4 @@
-/* Execute From Flash Startup  Sequence
+/* RAM-Only Image Startup  Sequence
  *
  * Copyright (c) 2025 Douglas H. Summerville, Binghamton University 
  *

@@ -57,7 +57,7 @@ SECTIONS
 		ASSERT( . < ORIGIN(FLASH) + LENGTH(FLASH), "Not enough flash memory for program");
 	} > FLASH
 
-	BSS : {
+	BSS (COPY) : {
 		__bss = .;
 		*(.bss*)
 		. = ALIGN(4);
