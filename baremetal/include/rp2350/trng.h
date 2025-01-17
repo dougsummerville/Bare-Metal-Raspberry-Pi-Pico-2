@@ -145,7 +145,7 @@ typedef struct{
 		uint32_t RSVDclr_4[901];
 } TRNG_REG_BLOCKS;
 
-#define trng ((TRNG_REG_BLOCKS volatile *)0x400f0000)
+#define trng (*(TRNG_REG_BLOCKS volatile *)0x400f0000)
 
 /*RNG_IMR Register macros*/
 

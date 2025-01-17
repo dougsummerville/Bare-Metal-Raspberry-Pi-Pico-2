@@ -57,7 +57,7 @@ typedef struct{
 		uint32_t RSVDclr_1[1018];
 } SYSINFO_REG_BLOCKS;
 
-#define sysinfo ((SYSINFO_REG_BLOCKS volatile *)0x40000000)
+#define sysinfo (*(SYSINFO_REG_BLOCKS volatile *)0x40000000)
 
 /*CHIP_ID Register macros*/
 

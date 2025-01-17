@@ -187,9 +187,9 @@ typedef struct{
 		uint32_t clr_ssppcellid3;
 } SPI1_REG_BLOCKS;
 
-#define spi0 ((SPI0_REG_BLOCKS volatile *)0x40080000)
+#define spi0 (*(SPI0_REG_BLOCKS volatile *)0x40080000)
 
-#define spi1 ((SPI1_REG_BLOCKS volatile *)0x40088000)
+#define spi1 (*(SPI1_REG_BLOCKS volatile *)0x40088000)
 
 /*SSPCR0 Register macros*/
 

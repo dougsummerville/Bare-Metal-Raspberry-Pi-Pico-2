@@ -49,7 +49,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1021];
 } M33_EPPB_REG_BLOCKS;
 
-#define m33_eppb ((M33_EPPB_REG_BLOCKS volatile *)0xe0000000)
+#define m33_eppb (*(M33_EPPB_REG_BLOCKS volatile *)0xe0000000)
 
 /*NMI_MASK0 Register macros*/
 

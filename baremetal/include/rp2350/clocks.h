@@ -249,7 +249,7 @@ typedef struct{
 		uint32_t RSVDclr_0[971];
 } CLOCKS_REG_BLOCKS;
 
-#define clocks ((CLOCKS_REG_BLOCKS volatile *)0x40010000)
+#define clocks (*(CLOCKS_REG_BLOCKS volatile *)0x40010000)
 
 /*CLK_GPOUT0_CTRL Register macros*/
 

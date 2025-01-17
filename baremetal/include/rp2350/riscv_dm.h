@@ -133,7 +133,7 @@ typedef struct{
 		uint32_t RSVDclr_7[959];
 } RISCV_DM_REG_BLOCKS;
 
-#define riscv_dm ((RISCV_DM_REG_BLOCKS volatile *)0x50700000)
+#define riscv_dm (*(RISCV_DM_REG_BLOCKS volatile *)0x50700000)
 
 /*DATA0 Register macros*/
 

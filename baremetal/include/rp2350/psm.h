@@ -53,7 +53,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1020];
 } PSM_REG_BLOCKS;
 
-#define psm ((PSM_REG_BLOCKS volatile *)0x40018000)
+#define psm (*(PSM_REG_BLOCKS volatile *)0x40018000)
 
 /*FRCE_ON Register macros*/
 

@@ -45,7 +45,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1022];
 } HSTX_FIFO_REG_BLOCKS;
 
-#define hstx_fifo ((HSTX_FIFO_REG_BLOCKS volatile *)0x50600000)
+#define hstx_fifo (*(HSTX_FIFO_REG_BLOCKS volatile *)0x50600000)
 
 /*STAT Register macros*/
 

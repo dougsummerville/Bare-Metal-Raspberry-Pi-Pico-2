@@ -309,7 +309,7 @@ typedef struct{
 		uint32_t RSVDclr_0[956];
 } PWM_REG_BLOCKS;
 
-#define pwm ((PWM_REG_BLOCKS volatile *)0x400a8000)
+#define pwm (*(PWM_REG_BLOCKS volatile *)0x400a8000)
 
 /*CH0_CSR Register macros*/
 

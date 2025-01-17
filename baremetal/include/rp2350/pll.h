@@ -107,9 +107,9 @@ typedef struct{
 		uint32_t RSVDclr_0[1016];
 } PLL_USB_REG_BLOCKS;
 
-#define pll_sys ((PLL_SYS_REG_BLOCKS volatile *)0x40050000)
+#define pll_sys (*(PLL_SYS_REG_BLOCKS volatile *)0x40050000)
 
-#define pll_usb ((PLL_USB_REG_BLOCKS volatile *)0x40058000)
+#define pll_usb (*(PLL_USB_REG_BLOCKS volatile *)0x40058000)
 
 /*CS Register macros*/
 

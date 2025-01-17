@@ -73,7 +73,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1015];
 } ADC_REG_BLOCKS;
 
-#define adc ((ADC_REG_BLOCKS volatile *)0x400a0000)
+#define adc (*(ADC_REG_BLOCKS volatile *)0x400a0000)
 
 /*CS Register macros*/
 

@@ -61,7 +61,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1018];
 } GLITCH_DETECTOR_REG_BLOCKS;
 
-#define glitch_detector ((GLITCH_DETECTOR_REG_BLOCKS volatile *)0x40158000)
+#define glitch_detector (*(GLITCH_DETECTOR_REG_BLOCKS volatile *)0x40158000)
 
 /*ARM Register macros*/
 

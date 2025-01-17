@@ -81,7 +81,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1013];
 } WATCHDOG_REG_BLOCKS;
 
-#define watchdog ((WATCHDOG_REG_BLOCKS volatile *)0x400d8000)
+#define watchdog (*(WATCHDOG_REG_BLOCKS volatile *)0x400d8000)
 
 /*CTRL Register macros*/
 

@@ -77,7 +77,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1014];
 } SHA256_REG_BLOCKS;
 
-#define sha256 ((SHA256_REG_BLOCKS volatile *)0x400f8000)
+#define sha256 (*(SHA256_REG_BLOCKS volatile *)0x400f8000)
 
 /*CSR Register macros*/
 

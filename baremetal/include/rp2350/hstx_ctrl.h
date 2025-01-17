@@ -81,7 +81,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1013];
 } HSTX_CTRL_REG_BLOCKS;
 
-#define hstx_ctrl ((HSTX_CTRL_REG_BLOCKS volatile *)0x400c0000)
+#define hstx_ctrl (*(HSTX_CTRL_REG_BLOCKS volatile *)0x400c0000)
 
 /*CSR Register macros*/
 

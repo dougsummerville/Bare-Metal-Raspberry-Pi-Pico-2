@@ -241,7 +241,7 @@ typedef struct{
 		uint32_t RSVDclr_0[973];
 } PADS_BANK0_REG_BLOCKS;
 
-#define pads_bank0 ((PADS_BANK0_REG_BLOCKS volatile *)0x40038000)
+#define pads_bank0 (*(PADS_BANK0_REG_BLOCKS volatile *)0x40038000)
 
 /*VOLTAGE_SELECT Register macros*/
 

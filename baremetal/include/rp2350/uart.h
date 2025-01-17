@@ -235,9 +235,9 @@ typedef struct{
 		uint32_t clr_uartpcellid3;
 } UART1_REG_BLOCKS;
 
-#define uart0 ((UART0_REG_BLOCKS volatile *)0x40070000)
+#define uart0 (*(UART0_REG_BLOCKS volatile *)0x40070000)
 
-#define uart1 ((UART1_REG_BLOCKS volatile *)0x40078000)
+#define uart1 (*(UART1_REG_BLOCKS volatile *)0x40078000)
 
 /*UARTDR Register macros*/
 

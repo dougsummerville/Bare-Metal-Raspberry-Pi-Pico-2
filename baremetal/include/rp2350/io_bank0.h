@@ -713,7 +713,7 @@ typedef struct{
 		uint32_t RSVDclr_1[824];
 } IO_BANK0_REG_BLOCKS;
 
-#define io_bank0 ((IO_BANK0_REG_BLOCKS volatile *)0x40028000)
+#define io_bank0 (*(IO_BANK0_REG_BLOCKS volatile *)0x40028000)
 
 /*GPIO0_STATUS Register macros*/
 

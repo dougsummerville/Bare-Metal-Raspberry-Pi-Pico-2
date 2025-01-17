@@ -57,7 +57,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1019];
 } XOSC_REG_BLOCKS;
 
-#define xosc ((XOSC_REG_BLOCKS volatile *)0x40048000)
+#define xosc (*(XOSC_REG_BLOCKS volatile *)0x40048000)
 
 /*CTRL Register macros*/
 

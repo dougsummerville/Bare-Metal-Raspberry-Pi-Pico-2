@@ -65,7 +65,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1017];
 } PADS_QSPI_REG_BLOCKS;
 
-#define pads_qspi ((PADS_QSPI_REG_BLOCKS volatile *)0x40040000)
+#define pads_qspi (*(PADS_QSPI_REG_BLOCKS volatile *)0x40040000)
 
 /*VOLTAGE_SELECT Register macros*/
 

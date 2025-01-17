@@ -195,9 +195,9 @@ typedef struct{
 		uint32_t RSVDclr_0[1005];
 } TIMER1_REG_BLOCKS;
 
-#define timer0 ((TIMER0_REG_BLOCKS volatile *)0x400b0000)
+#define timer0 (*(TIMER0_REG_BLOCKS volatile *)0x400b0000)
 
-#define timer1 ((TIMER1_REG_BLOCKS volatile *)0x400b8000)
+#define timer1 (*(TIMER1_REG_BLOCKS volatile *)0x400b8000)
 
 /*TIMEHW Register macros*/
 

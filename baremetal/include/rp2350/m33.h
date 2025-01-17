@@ -417,7 +417,7 @@ typedef struct{
 		uint32_t cidr3;
 } M33_REG_BLOCKS;
 
-#define m33 ((M33_REG_BLOCKS volatile *)0xe0000000)
+#define m33 (*(M33_REG_BLOCKS volatile *)0xe0000000)
 
 /*ITM_STIM0 Register macros*/
 

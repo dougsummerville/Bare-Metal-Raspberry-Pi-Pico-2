@@ -344,7 +344,7 @@ static void clear_ep_state( unsigned ep)
 typedef struct{
 		uint8_t addr;
 } usb_device_t;
-#define usb_device ((usb_device_t *)(usbram.ep0_buffer_opt))
+#define usb_device (*(usb_device_t *)(usbram.ep0_buffer_opt))
 
 
 /*Helper function to perform the frequent step of making out buffer avail and
@@ -380,14 +380,14 @@ static void prepare_in_buffer_on_ep( uint8_t ep )
  */
 void USBCTRL_IRQ_Handler() 
 {
-	uint32_t ints_req = usbctrl -> ints; //read once saves repeated volatile loads
+	uint32_t ints_req = usbctrl.ints; //read once saves repeated volatile loads
 	/*Received a USB reset 
 	 */
 	if( ints_req  & USBCTRL_INTS_BUS_RESET_MASK )
 	{
 		//reset address
-		usbctrl -> addr_endp = 0;
-		usb_device -> addr = 0;
+		usbctrl.addr_endp = 0;
+		usb_device.addr = 0;
 
 		//clear state
 		for( unsigned i=0; i< NUM_ENDPOINTS; i++ )
@@ -401,17 +401,17 @@ void USBCTRL_IRQ_Handler()
 	 */
 	if( ints_req & USBCTRL_INTS_BUFF_STATUS_MASK)
 	{
-		uint32_t ep_status = usbctrl->buff_status;
+		uint32_t ep_status = usbctrl.buff_status;
 		
 		//EP0 IN 
 		if( ep_status & USBCTRL_BUFF_STATUS_EP0_IN_MASK )
 		{
 			//Addr is set only after SetAddress; if set, just finished Status
 			//stage with old addr
-			if( usb_device -> addr ) 
+			if( usb_device.addr ) 
 			{
-				usbctrl->addr_endp = usb_device -> addr;
-				usb_device -> addr=0;
+				usbctrl.addr_endp = usb_device.addr;
+				usb_device.addr=0;
 			}
 			else if( usbram.ep_state[0].bytes_remaining ) 
 			{
@@ -476,7 +476,7 @@ void USBCTRL_IRQ_Handler()
 			}
 			break;
 		case 0x0500: //Std Dev- Set Address
-			usb_device -> addr = setup_packet.wValue&0xff;
+			usb_device.addr = setup_packet.wValue&0xff;
 			//zero len status will be sent
 			break;
 		case 0x0102: //CDC Set Communications Feature
@@ -500,8 +500,8 @@ void USBCTRL_IRQ_Handler()
 	//prepare an out packet if necessary and enumerated
 	prepare_out_to_host();
 	//Everything has been handled so ACK IRQ 
-	usbctrl -> clr_buff_status = 0xFFFFFFFF;
-	usbctrl -> clr_sie_status = 0xFFFFFFFF;
+	usbctrl.clr_buff_status = 0xFFFFFFFF;
+	usbctrl.clr_sie_status = 0xFFFFFFFF;
 }
 
 void configure_usbcdc()
@@ -510,17 +510,17 @@ void configure_usbcdc()
 	 * Configure USB PLL.  
 	 */
 	//un-reset USB PLL and poll until reset is deasserted
-	resets -> clr_reset  =  RESETS_RESET_PLL_USB_MASK;
-	while(!(resets -> reset_done & RESETS_RESET_DONE_PLL_USB_MASK))
+	resets.clr_reset  =  RESETS_RESET_PLL_USB_MASK;
+	while(!(resets.reset_done & RESETS_RESET_DONE_PLL_USB_MASK))
 		continue;
 	//config for 12x48MHz, disable power bits to start, and wait for lock
-	pll_usb -> cs = PLL_USB_CS_REFDIV(1);
-	pll_usb -> fbdiv_int = 120; //12MHz x 96 FCO = 1440 MHz
-	pll_usb -> pwr = 0;
-	while( !(pll_usb -> cs & PLL_USB_CS_LOCK_MASK))
+	pll_usb.cs = PLL_USB_CS_REFDIV(1);
+	pll_usb.fbdiv_int = 120; //12MHz x 96 FCO = 1440 MHz
+	pll_usb.pwr = 0;
+	while( !(pll_usb.cs & PLL_USB_CS_LOCK_MASK))
 		continue;
 	//config post dividers for divide-by-6-by-5, which gets PLL ouput to 48 MHz
-	pll_usb -> prim  =  
+	pll_usb.prim  =  
 		 PLL_USB_PRIM_POSTDIV1(6) |PLL_USB_PRIM_POSTDIV2(5);
 
 	/*
@@ -528,24 +528,24 @@ void configure_usbcdc()
 	 */
 
 	//Set auxsrc mux to 0 (USBPLL), Enable the clock, and wait for switch to finish
-	clocks -> clk_usb_ctrl  = 
+	clocks.clk_usb_ctrl  = 
 		 CLOCKS_CLK_USB_CTRL_AUXSRC(0) 
 		|CLOCKS_CLK_USB_CTRL_ENABLE_MASK;
 
-	while( !(clocks->clk_usb_selected & 0x1) )
+	while( !(clocks.clk_usb_selected & 0x1) )
 		continue;
 	
 	//Change divider to 1.0
-	clocks -> clk_usb_div  =  CLOCKS_CLK_USB_DIV_INT(1);
+	clocks.clk_usb_div  =  CLOCKS_CLK_USB_DIV_INT(1);
 	
 	/*
 	 * USB Config
 	 */
 
 	//Pull USB out of reset and wait until deasserted
-	resets -> clr_reset = RESETS_RESET_USBCTRL_MASK;
+	resets.clr_reset = RESETS_RESET_USBCTRL_MASK;
 
-	while(! (resets -> reset_done & RESETS_RESET_USBCTRL_MASK))
+	while(! (resets.reset_done & RESETS_RESET_USBCTRL_MASK))
 		continue;
 	
 	//Clear USB DPRAM (resets ring buffers as well)
@@ -553,26 +553,26 @@ void configure_usbcdc()
 		((uint32_t *)USB_DPRAM_OFFSET)[i]=0;
 		
 	//Enable USB IRQ (5) and set priority, clear pending for good measure
-	m33 -> nvic_iser0 = (1<<14);
-	m33 -> nvic_ipr3 = (m33 -> nvic_ipr3 & ~ M33_NVIC_IPR3_PRI_N2_MASK) | M33_NVIC_IPR3_PRI_N2(USB_IRQ_PRIORITY); 
-	m33 -> nvic_icpr0 = (1<<14);
+	m33.nvic_iser0 = (1<<14);
+	m33.nvic_ipr3 = (m33.nvic_ipr3 & ~ M33_NVIC_IPR3_PRI_N2_MASK) | M33_NVIC_IPR3_PRI_N2(USB_IRQ_PRIORITY); 
+	m33.nvic_icpr0 = (1<<14);
 
 	//connect usb to phy (should be by default)
-	usbctrl -> usb_muxing = 
+	usbctrl.usb_muxing = 
 		 USBCTRL_USB_MUXING_TO_PHY(1) 
 		|USBCTRL_USB_MUXING_SOFTCON(1);
-	usbctrl -> usb_pwr = 
+	usbctrl.usb_pwr = 
 		 USBCTRL_USB_PWR_VBUS_DETECT(1)
 		|USBCTRL_USB_PWR_VBUS_DETECT_OVERRIDE_EN(1);
 
 	//Enable controller in device mode
-	usbctrl -> main_ctrl = USBCTRL_MAIN_CTRL_CONTROLLER_EN(1) ;
+	usbctrl.main_ctrl = USBCTRL_MAIN_CTRL_CONTROLLER_EN(1) ;
 
 	//IRQ enabled for endpoint 0
-	usbctrl -> sie_ctrl = USBCTRL_SIE_CTRL_EP0_INT_1BUF(1)
+	usbctrl.sie_ctrl = USBCTRL_SIE_CTRL_EP0_INT_1BUF(1)
 		| USBCTRL_SIE_CTRL_RPU_OPT_MASK;
 
-	usbctrl -> set_inte = 
+	usbctrl.set_inte = 
 		 USBCTRL_INTE_BUS_RESET(1)
 	 	|USBCTRL_INTE_SETUP_REQ(1)
 		|USBCTRL_INTE_BUFF_STATUS(1);
@@ -621,7 +621,7 @@ void configure_usbcdc()
 	usbram.ep_state[3].buffer = (uint8_t *) usbram.data_buffer[2];
 
 	//enable pull-ups to signal connect to host
-	usbctrl -> set_sie_ctrl = USBCTRL_SIE_CTRL_PULLUP_EN(1);
+	usbctrl.set_sie_ctrl = USBCTRL_SIE_CTRL_PULLUP_EN(1);
 }
 
 int usbcdc_getchar(char *c)
@@ -651,5 +651,5 @@ int usbcdc_putchar( char c)
 }
 _Bool usbcdc_is_enumerated()
 {
-	return usbctrl -> addr_endp != 0 ;
+	return usbctrl.addr_endp != 0 ;
 }

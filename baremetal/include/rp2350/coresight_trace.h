@@ -45,7 +45,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1022];
 } CORESIGHT_TRACE_REG_BLOCKS;
 
-#define coresight_trace ((CORESIGHT_TRACE_REG_BLOCKS volatile *)0x50700000)
+#define coresight_trace (*(CORESIGHT_TRACE_REG_BLOCKS volatile *)0x50700000)
 
 /*CTRL_STATUS Register macros*/
 

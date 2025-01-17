@@ -109,7 +109,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1006];
 } TICKS_REG_BLOCKS;
 
-#define ticks ((TICKS_REG_BLOCKS volatile *)0x40108000)
+#define ticks (*(TICKS_REG_BLOCKS volatile *)0x40108000)
 
 /*PROC0_CTRL Register macros*/
 

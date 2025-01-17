@@ -81,7 +81,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1013];
 } BUSCTRL_REG_BLOCKS;
 
-#define busctrl ((BUSCTRL_REG_BLOCKS volatile *)0x40068000)
+#define busctrl (*(BUSCTRL_REG_BLOCKS volatile *)0x40068000)
 
 /*BUS_PRIORITY Register macros*/
 

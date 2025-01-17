@@ -273,7 +273,7 @@ typedef struct{
 		uint32_t RSVDclr_0[965];
 } ACCESSCTRL_REG_BLOCKS;
 
-#define accessctrl ((ACCESSCTRL_REG_BLOCKS volatile *)0x40060000)
+#define accessctrl (*(ACCESSCTRL_REG_BLOCKS volatile *)0x40060000)
 
 /*LOCK Register macros*/
 

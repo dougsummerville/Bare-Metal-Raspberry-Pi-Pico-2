@@ -335,21 +335,21 @@ typedef struct{
 		uint32_t RSVDclr_1[1016];
 } XIP_AUX_REG_BLOCKS;
 
-#define xip ((XIP_REG_BLOCKS volatile *)0x10000000)
+#define xip (*(XIP_REG_BLOCKS volatile *)0x10000000)
 
-#define xip_sram ((XIP_SRAM_REG_BLOCKS volatile *)0x13ffc000)
+#define xip_sram (*(XIP_SRAM_REG_BLOCKS volatile *)0x13ffc000)
 
-#define xip_nocache_noalloc ((XIP_NOCACHE_NOALLOC_REG_BLOCKS volatile *)0x14000000)
+#define xip_nocache_noalloc (*(XIP_NOCACHE_NOALLOC_REG_BLOCKS volatile *)0x14000000)
 
-#define xip_maintenance ((XIP_MAINTENANCE_REG_BLOCKS volatile *)0x18000000)
+#define xip_maintenance (*(XIP_MAINTENANCE_REG_BLOCKS volatile *)0x18000000)
 
-#define xip_nocache_noalloc_notranslate ((XIP_NOCACHE_NOALLOC_NOTRANSLATE_REG_BLOCKS volatile *)0x1c000000)
+#define xip_nocache_noalloc_notranslate (*(XIP_NOCACHE_NOALLOC_NOTRANSLATE_REG_BLOCKS volatile *)0x1c000000)
 
-#define xip_ctrl ((XIP_CTRL_REG_BLOCKS volatile *)0x400c8000)
+#define xip_ctrl (*(XIP_CTRL_REG_BLOCKS volatile *)0x400c8000)
 
-#define xip_qmi ((XIP_QMI_REG_BLOCKS volatile *)0x400d0000)
+#define xip_qmi (*(XIP_QMI_REG_BLOCKS volatile *)0x400d0000)
 
-#define xip_aux ((XIP_AUX_REG_BLOCKS volatile *)0x50500000)
+#define xip_aux (*(XIP_AUX_REG_BLOCKS volatile *)0x50500000)
 
 /*CTRL Register macros*/
 

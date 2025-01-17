@@ -269,7 +269,7 @@ typedef struct{
 		uint32_t RSVDclr_15[58];
 } RVCSR_REG_BLOCKS;
 
-#define rvcsr ((RVCSR_REG_BLOCKS volatile *)0xe0000000)
+#define rvcsr (*(RVCSR_REG_BLOCKS volatile *)0xe0000000)
 
 /*MSTATUS Register macros*/
 

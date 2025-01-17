@@ -49,7 +49,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1021];
 } RESETS_REG_BLOCKS;
 
-#define resets ((RESETS_REG_BLOCKS volatile *)0x40020000)
+#define resets (*(RESETS_REG_BLOCKS volatile *)0x40020000)
 
 /*RESET Register macros*/
 

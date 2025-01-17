@@ -49,7 +49,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1021];
 } XIP_AUX_REG_BLOCKS;
 
-#define xip_aux ((XIP_AUX_REG_BLOCKS volatile *)0x50500000)
+#define xip_aux (*(XIP_AUX_REG_BLOCKS volatile *)0x50500000)
 
 /*STREAM Register macros*/
 

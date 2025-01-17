@@ -61,7 +61,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1018];
 } SYSCFG_REG_BLOCKS;
 
-#define syscfg ((SYSCFG_REG_BLOCKS volatile *)0x40008000)
+#define syscfg (*(SYSCFG_REG_BLOCKS volatile *)0x40008000)
 
 /*PROC_CONFIG Register macros*/
 

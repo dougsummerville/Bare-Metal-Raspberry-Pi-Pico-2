@@ -1225,11 +1225,11 @@ typedef struct{
 		uint32_t RSVDclr_0[926];
 } PIO2_REG_BLOCKS;
 
-#define pio0 ((PIO0_REG_BLOCKS volatile *)0x50200000)
+#define pio0 (*(PIO0_REG_BLOCKS volatile *)0x50200000)
 
-#define pio1 ((PIO1_REG_BLOCKS volatile *)0x50300000)
+#define pio1 (*(PIO1_REG_BLOCKS volatile *)0x50300000)
 
-#define pio2 ((PIO2_REG_BLOCKS volatile *)0x50400000)
+#define pio2 (*(PIO2_REG_BLOCKS volatile *)0x50400000)
 
 /*CTRL Register macros*/
 

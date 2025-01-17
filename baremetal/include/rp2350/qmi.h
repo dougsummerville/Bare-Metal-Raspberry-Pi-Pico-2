@@ -121,7 +121,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1003];
 } QMI_REG_BLOCKS;
 
-#define qmi ((QMI_REG_BLOCKS volatile *)0x400d0000)
+#define qmi (*(QMI_REG_BLOCKS volatile *)0x400d0000)
 
 /*DIRECT_CSR Register macros*/
 

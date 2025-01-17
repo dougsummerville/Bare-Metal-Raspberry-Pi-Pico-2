@@ -259,9 +259,9 @@ typedef struct{
 		uint32_t tmds_pop_double_l2;
 } SIO_NONSEC_REG_BLOCKS;
 
-#define sio ((SIO_REG_BLOCKS volatile *)0xd0000000)
+#define sio (*(SIO_REG_BLOCKS volatile *)0xd0000000)
 
-#define sio_nonsec ((SIO_NONSEC_REG_BLOCKS volatile *)0xd0020000)
+#define sio_nonsec (*(SIO_NONSEC_REG_BLOCKS volatile *)0xd0020000)
 
 /*CPUID Register macros*/
 

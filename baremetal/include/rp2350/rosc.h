@@ -77,7 +77,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1014];
 } ROSC_REG_BLOCKS;
 
-#define rosc ((ROSC_REG_BLOCKS volatile *)0x400e8000)
+#define rosc (*(ROSC_REG_BLOCKS volatile *)0x400e8000)
 
 /*CTRL Register macros*/
 

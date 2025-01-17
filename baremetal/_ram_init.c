@@ -56,14 +56,14 @@ void __attribute__ ((section(".init"))) __system_entry_point()
 	uint32_t *to=&__text; 
 	while( to < &__etext )
 		*to++=*from++;
-	m33 -> vtor = (uint32_t) _VectorTable;
+	m33.vtor = (uint32_t) _VectorTable;
 	_crt0();
 }
 
 void __attribute__ ((section(".init"))) __INIT_Handler() 
 {
 	//Throw all peripherals into reset
-	//resets -> reset = 0x1FFFFFFF;
+	//resets.reset = 0x1FFFFFFF;
 	//TODO: disable IRQ
 	//TODO: what if two CPUs are running?
 	//Sleep forever
@@ -73,7 +73,7 @@ void __attribute__ ((section(".init"))) __INIT_Handler()
 void _DEFAULT_Handler() 
 {
 	//Throw all peripherals into reset
-	//resets -> reset = 0x1FFFFFFF;
+	//resets.reset = 0x1FFFFFFF;
 	//TODO: disable IRQ
 	//TODO: what if two CPUs are running?
 	//Sleep forever

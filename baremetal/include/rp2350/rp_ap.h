@@ -77,7 +77,7 @@ typedef struct{
 		uint32_t RSVDclr_1[128];
 } RP_AP_REG_BLOCKS;
 
-#define rp_ap ((RP_AP_REG_BLOCKS volatile *)0x50700000)
+#define rp_ap (*(RP_AP_REG_BLOCKS volatile *)0x50700000)
 
 /*CTRL Register macros*/
 

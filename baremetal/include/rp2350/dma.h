@@ -1521,7 +1521,7 @@ typedef struct{
 		uint32_t RSVDclr_22[270];
 } DMA_REG_BLOCKS;
 
-#define dma ((DMA_REG_BLOCKS volatile *)0x50000000)
+#define dma (*(DMA_REG_BLOCKS volatile *)0x50000000)
 
 /*CH0_READ_ADDR Register macros*/
 

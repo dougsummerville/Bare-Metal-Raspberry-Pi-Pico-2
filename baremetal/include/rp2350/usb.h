@@ -221,7 +221,7 @@ typedef struct{
 		uint32_t RSVDclr_1[954];
 } USBCTRL_REG_BLOCKS;
 
-#define usbctrl ((USBCTRL_REG_BLOCKS volatile *)0x50110000)
+#define usbctrl (*(USBCTRL_REG_BLOCKS volatile *)0x50110000)
 
 /*ADDR_ENDP Register macros*/
 

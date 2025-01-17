@@ -85,7 +85,7 @@ typedef struct{
 		uint32_t RSVDclr_1[501];
 } BOOTRAM_REG_BLOCKS;
 
-#define bootram ((BOOTRAM_REG_BLOCKS volatile *)0x400e0000)
+#define bootram (*(BOOTRAM_REG_BLOCKS volatile *)0x400e0000)
 
 /*WRITE_ONCE0 Register macros*/
 

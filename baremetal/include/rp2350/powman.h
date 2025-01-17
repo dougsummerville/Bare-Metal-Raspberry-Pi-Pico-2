@@ -277,7 +277,7 @@ typedef struct{
 		uint32_t RSVDclr_0[964];
 } POWMAN_REG_BLOCKS;
 
-#define powman ((POWMAN_REG_BLOCKS volatile *)0x40100000)
+#define powman (*(POWMAN_REG_BLOCKS volatile *)0x40100000)
 
 /*BADPASSWD Register macros*/
 

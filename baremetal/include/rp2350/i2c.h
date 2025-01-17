@@ -411,9 +411,9 @@ typedef struct{
 		uint32_t RSVDclr_4[960];
 } I2C1_REG_BLOCKS;
 
-#define i2c0 ((I2C0_REG_BLOCKS volatile *)0x40090000)
+#define i2c0 (*(I2C0_REG_BLOCKS volatile *)0x40090000)
 
-#define i2c1 ((I2C1_REG_BLOCKS volatile *)0x40098000)
+#define i2c1 (*(I2C1_REG_BLOCKS volatile *)0x40098000)
 
 /*IC_CON Register macros*/
 

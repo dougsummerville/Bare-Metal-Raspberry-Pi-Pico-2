@@ -1,7 +1,7 @@
 # Bare Metal Raspberry PI Pico 2
  A bare metal C programming environment for the Raspberry Pi Pico 2 with minimal dependences.  This is "true" minimalistic bare metal C with no SDK, CMSIS, or other layers between programmer and the hardware; it does, however, include header files defining all hardware registers.  Features include: 
 - a USB CDC serial driver that uses no system RAM (only USB DPRAM) and provides a virtual COM port
-- header files that provide for standard port naming
+- header files that provide for standard register naming
 - stub files for Newlib-nano
 - very few examples (see Motivation below)  
 - a python-based tool to create UF2 files.
@@ -17,7 +17,7 @@
 This environment has not yet undergone significant testing but will be updated as bugs are disovered.
  
 # Accessing Hardware Registers
-Each peripheral (e.g. UART) and CPU subsystem (e.g. PLL) has an include file (e.g. rp2350/pll.h) that can be included to use the register definitions and field macros.  The register block for a peripheral is overlayed with a struct pointer with the same name as the peripheral.  To access a register, use struct pointer notation. For example, the RP2350 datasheet shows pll_sys has a cs register;this would be accessed using pll_sys->cs.  To use the atomic versions of the registers, prepend set_, clr_, or xor to the register name.  The included example LED driver should make this clear.
+Each peripheral (e.g. UART) and CPU subsystem (e.g. PLL) has an include file (e.g. rp2350/pll.h) that can be included to use the register definitions and field macros.  The register block for a peripheral is overlayed with a struct with the same name as the peripheral.  To access a register, use peripheral.regster notation. For example, the RP2350 datasheet shows pll_sys has a cs register;this would be accessed using pll_sys.cs.  To use the atomic versions of the registers, prepend set_, clr_, or xor to the register name (e.g. pll_sys.clr_cs).  The included example LED driver should make this clear.
 
 # Included Examples
  A sample C program to flash the LED on the Pico 2 is provided in the src directory.  To make the UF2, run the command 

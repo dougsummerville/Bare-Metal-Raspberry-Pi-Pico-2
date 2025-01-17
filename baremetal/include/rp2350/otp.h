@@ -1921,15 +1921,15 @@ typedef struct{
 		uint32_t RSVDclr_1[931];
 } OTP_DATA_RAW_GUARDED_REG_BLOCKS;
 
-#define otp ((OTP_REG_BLOCKS volatile *)0x40120000)
+#define otp (*(OTP_REG_BLOCKS volatile *)0x40120000)
 
-#define otp_data ((OTP_DATA_REG_BLOCKS volatile *)0x40130000)
+#define otp_data (*(OTP_DATA_REG_BLOCKS volatile *)0x40130000)
 
-#define otp_data_raw ((OTP_DATA_RAW_REG_BLOCKS volatile *)0x40134000)
+#define otp_data_raw (*(OTP_DATA_RAW_REG_BLOCKS volatile *)0x40134000)
 
-#define otp_data_guarded ((OTP_DATA_GUARDED_REG_BLOCKS volatile *)0x40138000)
+#define otp_data_guarded (*(OTP_DATA_GUARDED_REG_BLOCKS volatile *)0x40138000)
 
-#define otp_data_raw_guarded ((OTP_DATA_RAW_GUARDED_REG_BLOCKS volatile *)0x4013c000)
+#define otp_data_raw_guarded (*(OTP_DATA_RAW_GUARDED_REG_BLOCKS volatile *)0x4013c000)
 
 /*SW_LOCK0 Register macros*/
 

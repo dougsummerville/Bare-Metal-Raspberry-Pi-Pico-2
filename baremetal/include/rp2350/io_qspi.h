@@ -169,7 +169,7 @@ typedef struct{
 		uint32_t RSVDclr_1[880];
 } IO_QSPI_REG_BLOCKS;
 
-#define io_qspi ((IO_QSPI_REG_BLOCKS volatile *)0x40030000)
+#define io_qspi (*(IO_QSPI_REG_BLOCKS volatile *)0x40030000)
 
 /*USBPHY_DP_STATUS Register macros*/
 

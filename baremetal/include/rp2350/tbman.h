@@ -41,7 +41,7 @@ typedef struct{
 		uint32_t RSVDclr_0[1023];
 } TBMAN_REG_BLOCKS;
 
-#define tbman ((TBMAN_REG_BLOCKS volatile *)0x40160000)
+#define tbman (*(TBMAN_REG_BLOCKS volatile *)0x40160000)
 
 /*PLATFORM Register macros*/
 
