@@ -39,17 +39,14 @@ SECTIONS
 	TEXT : {
 		*(.text*)
 		*(.rodata*)
-		. = ALIGN(4);
 		__etext = .;
 	} > FLASH
 
-        
 	DATA : {
 		__data_lma = LOADADDR(DATA);
 		__data = .;
 		*(.data)
 		*(.data*)
-		. = ALIGN(4);
 		__edata = .;
 	} > RAM AT> FLASH
 
@@ -57,10 +54,9 @@ SECTIONS
 		ASSERT( . < ORIGIN(FLASH) + LENGTH(FLASH), "Not enough flash memory for program");
 	} > FLASH
 
-	BSS (COPY) : {
+	BSS  : {
 		__bss = .;
 		*(.bss*)
-		. = ALIGN(4);
 		ASSERT( . < ORIGIN(RAM) + LENGTH(RAM), "Not enough RAM memory for program");
 	} > RAM
 	__ebss = .;

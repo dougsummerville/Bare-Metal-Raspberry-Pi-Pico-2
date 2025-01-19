@@ -27,10 +27,10 @@
 
 
 //Needs 
-extern uint32_t __stack_top;
-extern uint32_t __text_lma;
-extern uint32_t __text;
-extern uint32_t __etext;
+extern char __stack_top;
+extern char __text_lma;
+extern char __text;
+extern char __etext;
 
 extern void _crt0();
 //Provides
@@ -52,8 +52,8 @@ void __attribute__ ((section(".init"))) __system_entry_point()
 	//copy text segment to RAM.  Rest done in crt0
 
 
-	uint32_t *from=&__text_lma;
-	uint32_t *to=&__text; 
+	char *from=&__text_lma;
+	char *to=&__text; 
 	while( to < &__etext )
 		*to++=*from++;
 	m33.vtor = (uint32_t) _VectorTable;

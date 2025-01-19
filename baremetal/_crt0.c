@@ -29,8 +29,8 @@
 
 #include <stdint.h>
 //Segment Locations
-extern uint32_t __bss, __ebss;
-extern uint32_t __data, __edata, __data_lma;
+extern char __bss, __ebss;
+extern char __data, __edata, __data_lma;
 
 //Functions provided
 static void _config_sys_clock();
@@ -43,14 +43,9 @@ void _crt0(){
 	_config_sys_clock();
 	_config_ref_clock();
 
-	/*Basic C initialization sequence.  The compiler cannot optimize these away
-	 * for empty DATA or BSS segments at compile time because linker symbols are 
-	 * unknown.
-	 */
-
 	/*Copy DATA segment*/
-	uint32_t *to= &__data;
-	uint32_t *from= &__data_lma;
+	char *to= &__data;
+	char *from= &__data_lma;
 	while( to < &__edata )
 		*to++ = *from++;
 	/*Clear BSS segment*/

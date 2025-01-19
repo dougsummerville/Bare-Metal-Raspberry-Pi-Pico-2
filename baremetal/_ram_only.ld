@@ -43,7 +43,6 @@ SECTIONS
 		*(.text*)
 		*(.rodata) 
 		*(.rodata*) 
-		. = ALIGN(4);
 		__etext = .;
 	} >RAM
 	
@@ -51,7 +50,6 @@ SECTIONS
 		__data_lma = .;
 		__data = .;
 		*(.data*)
-		. = ALIGN(4);
 		__edata = .;
 	} >RAM 
 
@@ -59,7 +57,6 @@ SECTIONS
 	{
 		__bss = .;
 		*(.bss*)
-		. = ALIGN(4);
 		ASSERT( . < ORIGIN(RAM) + LENGTH(RAM), "Not enough RAM memory for program");
 	} > RAM
 	__ebss = .;

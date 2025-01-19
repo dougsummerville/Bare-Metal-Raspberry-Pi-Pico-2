@@ -41,7 +41,6 @@ SECTIONS
 	RODATA : {
 		*(.rodata) 
 		*(.rodata*) 
-		. = ALIGN(4);
 	} > FLASH
 
 	.symbol : {
@@ -52,7 +51,6 @@ SECTIONS
 		__text = .;
 		KEEP(_ram_init.o(.vector_table))
 		*(.text*)
-		. = ALIGN(4);
 		__etext = .;
 	} >RAM AT> FLASH
 	
@@ -60,7 +58,6 @@ SECTIONS
 		__data_lma = LOADADDR(DATA);
 		__data = .;
 		*(.data*)
-		. = ALIGN(4);
 		__edata = .;
 		ASSERT( . < ORIGIN(FLASH) + LENGTH(FLASH), "Not enough flash memory for program");
 	} >RAM AT> FLASH
@@ -69,7 +66,6 @@ SECTIONS
 	{
 		__bss = .;
 		*(.bss*)
-		. = ALIGN(4);
 		ASSERT( . < ORIGIN(RAM) + LENGTH(RAM), "Not enough RAM memory for program");
 	} > RAM
 	__ebss = .;

@@ -21,6 +21,7 @@ void main()
 
 	while(getchar() == -1);
 	puts("Hit any key to continue...\n\r");
+	printf("printf works\n\r");
 
 	char c;
 	while( -1 == (c=getchar()) )
