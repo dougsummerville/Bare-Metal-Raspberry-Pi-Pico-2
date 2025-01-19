@@ -14,12 +14,18 @@ void main()
 {
 	static char *ptrs[1024];
 	unsigned idx=0;
+
+	asm volatile ("cpsid i");
 	configure_usbcdc();
+	asm volatile ("cpsie i");
+
 	while(getchar() == -1);
 	puts("Hit any key to continue...\n\r");
+
 	char c;
 	while( -1 == (c=getchar()) )
 		continue;
+
 	srand(c);
 	puts("\n\rTesting malloc\n\r");
 	while(1){

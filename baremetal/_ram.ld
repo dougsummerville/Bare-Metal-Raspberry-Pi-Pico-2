@@ -45,10 +45,10 @@ SECTIONS
 	} > FLASH
 
 	.symbol : {
-		__text_lma = .;
 	} > FLASH
 
 	TEXT : {
+		__text_lma = LOADADDR(TEXT);
 		__text = .;
 		KEEP(_ram_init.o(.vector_table))
 		*(.text*)
@@ -56,13 +56,9 @@ SECTIONS
 		__etext = .;
 	} >RAM AT> FLASH
 	
-	.symbol : {
-		__etext_lma = .;
-	} > FLASH
-
 	DATA : {
+		__data_lma = LOADADDR(DATA);
 		__data = .;
-		*(.data)
 		*(.data*)
 		. = ALIGN(4);
 		__edata = .;

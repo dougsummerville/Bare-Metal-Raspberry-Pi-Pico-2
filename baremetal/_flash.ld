@@ -41,11 +41,11 @@ SECTIONS
 		*(.rodata*)
 		. = ALIGN(4);
 		__etext = .;
-		__etext_lma = .;
 	} > FLASH
 
         
 	DATA : {
+		__data_lma = LOADADDR(DATA);
 		__data = .;
 		*(.data)
 		*(.data*)

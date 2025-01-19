@@ -45,12 +45,11 @@ SECTIONS
 		*(.rodata*) 
 		. = ALIGN(4);
 		__etext = .;
-		__etext_lma = .;
 	} >RAM
 	
 	DATA : {
+		__data_lma = .;
 		__data = .;
-		*(.data)
 		*(.data*)
 		. = ALIGN(4);
 		__edata = .;

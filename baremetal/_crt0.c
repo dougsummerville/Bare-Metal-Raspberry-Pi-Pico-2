@@ -30,7 +30,7 @@
 #include <stdint.h>
 //Segment Locations
 extern uint32_t __bss, __ebss;
-extern uint32_t __data, __edata, __etext_lma;
+extern uint32_t __data, __edata, __data_lma;
 
 //Functions provided
 static void _config_sys_clock();
@@ -50,7 +50,7 @@ void _crt0(){
 
 	/*Copy DATA segment*/
 	uint32_t *to= &__data;
-	uint32_t *from= &__etext_lma;
+	uint32_t *from= &__data_lma;
 	while( to < &__edata )
 		*to++ = *from++;
 	/*Clear BSS segment*/
