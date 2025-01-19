@@ -25,12 +25,12 @@
 #include <rp2350/m33.h>
 #include <stdint.h>
 
-
+#define RAMSIZE 520*1024
 //Needs 
 extern char __stack_top;
-extern char __text_lma;
-extern char __text;
-extern char __etext;
+extern char __text_lma[RAMSIZE];
+extern char __text[RAMSIZE];
+extern char __etext[];
 
 extern void _crt0();
 //Provides
@@ -52,9 +52,9 @@ void __attribute__ ((section(".init"))) __system_entry_point()
 	//copy text segment to RAM.  Rest done in crt0
 
 
-	char *from=&__text_lma;
-	char *to=&__text; 
-	while( to < &__etext )
+	char *from=__text_lma;
+	char *to=__text; 
+	while( to < __etext )
 		*to++=*from++;
 	m33.vtor = (uint32_t) _VectorTable;
 	_crt0();

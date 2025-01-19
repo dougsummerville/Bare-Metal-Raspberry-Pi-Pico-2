@@ -28,9 +28,10 @@
 #include <rp2350/xosc.h>
 
 #include <stdint.h>
+#define RAMSIZE 520*1024
 //Segment Locations
-extern char __bss, __ebss;
-extern char __data, __edata, __data_lma;
+extern char __bss[RAMSIZE], __ebss[];
+extern char __data[RAMSIZE], __edata[], __data_lma[RAMSIZE];
 
 //Functions provided
 static void _config_sys_clock();
@@ -44,13 +45,13 @@ void _crt0(){
 	_config_ref_clock();
 
 	/*Copy DATA segment*/
-	char *to= &__data;
-	char *from= &__data_lma;
-	while( to < &__edata )
+	char *to= __data;
+	char *from= __data_lma;
+	while( to < __edata )
 		*to++ = *from++;
 	/*Clear BSS segment*/
-	to = &__bss;
-	while( to < &__ebss)
+	to = __bss;
+	while( to < __ebss)
 		*to++ = 0;
 	main();
 }
