@@ -21,8 +21,6 @@
 # IN THE SOFTWARE.
 
 CC = arm-none-eabi-gcc
-OBJCOPY = arm-none-eabi-objcopy
-OBJDUMP = arm-none-eabi-objdump
 OBJSIZE = arm-none-eabi-size
 ELF2UF2 = tools/elf2uf2.py
 INCLUDES = -Idrivers -Ibaremetal/include -Ilib -Iinclude
@@ -58,17 +56,13 @@ clean:
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-%.dump: %.out
-	$(OBJDUMP) --disassemble $< >$@
-
 %.uf2: %.elf
 	$(ELF2UF2) -v $<
 
-%.elf: %.out 
-	$(OBJCOPY) -O elf32-littlearm $< $@
-
-%.out: %.o $(LIBS) _crt0.o _$(EXECUTEFROM)_init.o _newlib_stubs.o
+%.elf: %.c $(LIBS) _crt0.o _$(EXECUTEFROM)_init.o _newlib_stubs.o
 	$(CC) $(CFLAGS) $(LINKOPTS) -T $(LINKSCRIPT) -o $@ $^
-	@echo Generated Program has the following segments:
-	@$(OBJSIZE) -A $@
+	@echo
+	@echo Generated Program has the following segments: \n
+	@echo
+	-@$(OBJSIZE) -A	$@  | awk 'NR==2{print; next } NR>2 && NR<7 {$$3=sprintf("0x%08x",$$3); print}' | column -t
 
