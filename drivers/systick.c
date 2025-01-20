@@ -3,12 +3,9 @@
 #include <stdint.h>
 #include <rp2350/m33.h>
 #include <rp2350/ticks.h>
-#include <interrupt.h>
 
 #define SYSTICK_FREQ 1000
 #define SYSTICK_TOP (1000000/SYSTICK_FREQ)
-
-static volatile _Bool systick_fired_flag=false;
 
 void configure_systick(uint32_t systick_period_us)
 {
@@ -24,14 +21,5 @@ void configure_systick(uint32_t systick_period_us)
 }
 _Bool systick_has_fired()
 {
-	uint32_t primask=get_primask();
-	disable_irq();
-	_Bool retval=systick_fired_flag;
-	systick_fired_flag=false;
-	set_primask(primask);
-	return retval;
-}
-void SYSTICK_Handler() 
-{
-	systick_fired_flag=true;
+	return m33.syst_csr & M33_SYST_CSR_COUNTFLAG_MASK;
 }
