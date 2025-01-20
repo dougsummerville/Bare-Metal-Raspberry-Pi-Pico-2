@@ -17,7 +17,7 @@ void configure_systick(uint32_t systick_period_us)
 		| M33_SHPR3_PRI_14_3(0);
 	m33.syst_csr= M33_SYST_CSR_CLKSOURCE(0) 
 		| M33_SYST_CSR_ENABLE_MASK 
-		| M33_SYST_CSR_TICKINT_MASK;
+		| M33_SYST_CSR_TICKINT(0);
 }
 _Bool systick_has_fired()
 {
