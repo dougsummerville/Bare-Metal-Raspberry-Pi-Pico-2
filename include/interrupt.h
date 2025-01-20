@@ -14,7 +14,7 @@ static inline void set_primask(uint32_t primask)
 {
 	__asm__ volatile ("MSR primask, %0" : : "r" (primask) );
 }
-#define enable_irq() asm volatile ("CPSIE I")
-#define disable_irq() asm volatile ("CPSID I")
+#define enable_irq() __asm__ volatile ("CPSIE I")
+#define disable_irq() __asm__ volatile ("CPSID I")
 
 #endif

@@ -26,7 +26,7 @@
 
 
 //Needs 
-extern uint32_t __stack_top;
+extern void __stack_top();
 extern void _crt0();
 //Provides
 
@@ -39,10 +39,10 @@ void _DEFAULT_Handler()
 {
 	//Throw all peripherals into reset
 	resets.reset = 0x1FFFFFFF;
-	asm("CPSID I");
+	__asm__("CPSID I");
 	//Sleep forever
 	while(1)
-		asm("WFI");//try to sleep forever
+		__asm__("WFI");//try to sleep forever
 }
 void __attribute__ ((weak, alias("_DEFAULT_Handler"))) NMI_Handler();
 void __attribute__ ((weak, alias("_DEFAULT_Handler"))) SYSTICK_Handler();
@@ -102,11 +102,11 @@ void __attribute__ ((weak, alias("_DEFAULT_Handler"))) SPARE_IRQ_3_Handler();
 void __attribute__ ((weak, alias("_DEFAULT_Handler"))) SPARE_IRQ_4_Handler();
 void __attribute__ ((weak, alias("_DEFAULT_Handler"))) SPARE_IRQ_5_Handler();
 // Interrupt vector table: array of pointers to functions 
-#define RESERVED ((void *)0x44565352) //ASCII RSVD
-void * const _InterruptVector[] __attribute__ ((section(".vector_table"))) =  
+#define RESERVED ((void (*)())0x44565352) //ASCII RSVD
+void (* const _InterruptVector[])() __attribute__ ((section(".vector_table"))) =  
 {
-	(void *)&__stack_top, // Initial stack pointer
-	(void *)_system_entry_point,// Reset handler
+	&__stack_top, // Initial stack pointer
+	&_system_entry_point,// Reset handler
 	NMI_Handler, //NMI
 	HARDFAULT_Handler, //HardFault
 	RESERVED,

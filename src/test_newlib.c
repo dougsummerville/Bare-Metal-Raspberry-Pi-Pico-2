@@ -15,9 +15,9 @@ void main()
 	static char *ptrs[1024];
 	unsigned idx=0;
 
-	asm volatile ("cpsid i");
+	__asm__ volatile ("cpsid i");
 	configure_usbcdc();
-	asm volatile ("cpsie i");
+	__asm__ volatile ("cpsie i");
 
 	while(getchar() == -1);
 	puts("Hit any key to continue...\n\r");
@@ -31,7 +31,7 @@ void main()
 	puts("\n\rTesting malloc\n\r");
 	while(1){
 		ptrs[idx]=malloc(1024);
-		if( ptrs[idx] > 0 ){
+		if( ptrs[idx] > (char *)NULL ){
 			idx++;
 		}else{
 			printf("Allocated %d 1kB Blocks\n\r", idx);
@@ -48,7 +48,7 @@ void main()
 	}
 	while(1){
 		ptrs[idx]=malloc(1024);
-		if( ptrs[idx] != NULL ){
+		if( ptrs[idx] != (char *)NULL ){
 			idx++;
 		}else{
 			printf("Allocated %d 1kB Blocks\n\r", idx);
@@ -58,7 +58,7 @@ void main()
 				do{
 					idx--;
 					free(ptrs[idx]);
-					ptrs[idx]=0;
+					ptrs[idx]=(char *)NULL;
 				}while(idx);
 			}
 			break;
@@ -67,14 +67,14 @@ void main()
 	unsigned count=0;
 	while(1){
 		idx=rand()%256;
-		if( ptrs[idx] != 0 ){
+		if( ptrs[idx] != (char *)NULL ){
 			free(ptrs[idx]);
 			ptrs[idx]=0;
 		}
 		else{
 			count++;
 			ptrs[idx]=malloc(1024+rand()%4095 + 1);
-			if( ptrs[idx] <= 0 )
+			if( ptrs[idx] <= (char *)NULL )
 				break;
 		}
 	}

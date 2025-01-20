@@ -27,7 +27,7 @@
 
 #define RAMSIZE 520*1024
 //Needs 
-extern char __stack_top;
+extern void __stack_top();
 extern char __text_lma[RAMSIZE];
 extern char __text[RAMSIZE];
 extern char __etext[];
@@ -36,13 +36,13 @@ extern void _crt0();
 //Provides
 void __INIT_Handler() ;
 void __system_entry_point();
-void * _VectorTable[];  
+void (* _VectorTable[])();  
 
 /*Only used during boot stage 2 in case of error copying to RAM*/
-void * const __init_vectors__[] __attribute__ ((section(".init_vector"))) =  
+void (*__init_vectors__[])() __attribute__ ((section(".init_vector"))) =  
 {
-	(void *)&__stack_top, // Initial stack pointer
-	(void *)__system_entry_point,// Reset handler+thumb bit
+	&__stack_top, // Initial stack pointer
+	&__system_entry_point,// Reset handler+thumb bit
 	__INIT_Handler, //NMI
 	__INIT_Handler //HardFault
 };
@@ -68,7 +68,7 @@ void __attribute__ ((section(".init"))) __INIT_Handler()
 	//TODO: what if two CPUs are running?
 	//Sleep forever
 	while(1)
-		asm("WFI");//try to sleep forever
+		__asm__("WFI");//try to sleep forever
 }
 void _DEFAULT_Handler() 
 {
@@ -78,7 +78,7 @@ void _DEFAULT_Handler()
 	//TODO: what if two CPUs are running?
 	//Sleep forever
 	while(1)
-		asm("WFI");//try to sleep forever
+		__asm__("WFI");//try to sleep forever
 }
 void __attribute__ ((weak, alias("_DEFAULT_Handler"))) NMI_Handler();
 void __attribute__ ((weak, alias("_DEFAULT_Handler"))) SYSTICK_Handler();
@@ -138,13 +138,13 @@ void __attribute__ ((weak, alias("_DEFAULT_Handler"))) SPARE_IRQ_3_Handler();
 void __attribute__ ((weak, alias("_DEFAULT_Handler"))) SPARE_IRQ_4_Handler();
 void __attribute__ ((weak, alias("_DEFAULT_Handler"))) SPARE_IRQ_5_Handler();
 // Interrupt vector table: array of pointers to functions 
-#define RESERVED ((void *)0x44565352) //ASCII RSVD
-void * _VectorTable[] __attribute__ ((section(".vector_table"))) =  
+#define RESERVED ((void(*)())0x44565352) //ASCII RSVD
+void (* _VectorTable[])() __attribute__ ((section(".vector_table"))) =  
 {
 	//stacktop and system entry point are configured by the boot2 stage
 	//so technically these are not needed.  They are here for consistency
-	(void *)&__stack_top, // Initial stack pointer
-	(void *)__system_entry_point,// Reset handler+thumb bit
+	&__stack_top, // Initial stack pointer
+	&__system_entry_point,// Reset handler+thumb bit
 	NMI_Handler, //NMI
 	HARDFAULT_Handler, //HardFault
 	RESERVED,

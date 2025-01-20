@@ -35,6 +35,7 @@ OPTS = -Os
 
 TARGET = armv8-m.main+fp+dsp
 CFLAGS = -ffreestanding -march=$(TARGET) -mfloat-abi=hard -mthumb \
+	 -std=c11 -pedantic \
 	  $(OPTS) $(INCLUDES) $(LTOPTS) -Wall
 #EXECUTE FROM can be flash, ram, or ram_only
 EXECUTEFROM=flash

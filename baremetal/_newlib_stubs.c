@@ -44,10 +44,10 @@ char **environ = __env;
 int _write(int handle, char *buf, int len) ;
 int _read(int handle, char *buffer, int length);
 void _exit(int unused_arg);
-int _close(int unused_arg);;
+int _close(int unused_arg);
 int _execve(char *name, char **argv, char **env);
 int _fork(void);
-int _fstat(int fd, struct stat *st);;
+int _fstat(int fd, struct stat *st);
 int _getpid();
 int _isatty(int fd);
 int _kill(int pid, int sig);
@@ -108,7 +108,7 @@ void _exit(int unused_arg)
 {
 	_write(2, "exit\n", 5);
 	while (1){
-		asm("WFI");
+		__asm__("WFI");
 	}
 }
 

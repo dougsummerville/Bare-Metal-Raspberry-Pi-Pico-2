@@ -642,7 +642,7 @@ int usbcdc_putchar( char c)
 		return 0;
 	uint32_t primask;
 	__asm__ volatile ("MRS %0, primask" : "=r" (primask) );
-	asm volatile ("CPSID I");
+	__asm__ volatile ("CPSID I");
 	tx_buffer.buf[tx_buffer.head] = c;
 	tx_buffer.head = txhead_next();
 	prepare_out_to_host();
