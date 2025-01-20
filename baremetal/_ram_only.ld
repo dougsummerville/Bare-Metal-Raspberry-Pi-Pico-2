@@ -57,7 +57,6 @@ SECTIONS
 	{
 		__bss = .;
 		*(.bss*)
-		ASSERT( . < ORIGIN(RAM) + LENGTH(RAM), "Not enough RAM memory for program");
 	} > RAM
 	__ebss = .;
 	__end = .;

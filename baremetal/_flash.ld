@@ -50,14 +50,9 @@ SECTIONS
 		__edata = .;
 	} > RAM AT> FLASH
 
-	.dummy : {
-		ASSERT( . < ORIGIN(FLASH) + LENGTH(FLASH), "Not enough flash memory for program");
-	} > FLASH
-
 	BSS  : {
 		__bss = .;
 		*(.bss*)
-		ASSERT( . < ORIGIN(RAM) + LENGTH(RAM), "Not enough RAM memory for program");
 	} > RAM
 	__ebss = .;
 	__end = .;

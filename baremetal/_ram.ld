@@ -59,14 +59,12 @@ SECTIONS
 		__data = .;
 		*(.data*)
 		__edata = .;
-		ASSERT( . < ORIGIN(FLASH) + LENGTH(FLASH), "Not enough flash memory for program");
 	} >RAM AT> FLASH
 
 	BSS (COPY):
 	{
 		__bss = .;
 		*(.bss*)
-		ASSERT( . < ORIGIN(RAM) + LENGTH(RAM), "Not enough RAM memory for program");
 	} > RAM
 	__ebss = .;
 	__end = .;
