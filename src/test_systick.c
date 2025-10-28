@@ -2,7 +2,6 @@
 #include "led.h"
 #include <stdint.h>
 
-#define LOOP_PERIOD_us 1000
 int main ( void )
 {
 	uint16_t cnt=0;

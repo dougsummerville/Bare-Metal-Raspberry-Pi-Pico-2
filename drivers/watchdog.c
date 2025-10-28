@@ -1,19 +1,24 @@
 #include "watchdog.h"
-#include <rp2040/watchdog.h>
-#include <rp2040/psm.h>
+#include <rp2350/watchdog.h>
+#include <rp2350/psm.h>
+#include <rp2350/ticks.h>
 #include "stdint.h"
+
 static uint32_t reload_value;
-void configure_watchdog( uint32_t reload)
+
+void configure_watchdog( uint32_t reload_us)
 {
-	WATCHDOG_CLR_CTRL = WATCHDOG_CTRL_ENABLE_MASK;
-	PSM_WDSEL = 0xfffc;
-	WATCHDOG_TICK = WATCHDOG_TICK_ENABLE_MASK | WATCHDOG_TICK_CYCLES(12);
-	reload_value = reload*2;
+	WATCHDOG_CTRL_CLR = WATCHDOG_CTRL_ENABLE_MASK;
+	PSM_WDSEL = 0x01FFFFFF;
+	TICKS_WATCHDOG_CYCLES=1;
+	TICKS_WATCHDOG_CTRL = TICKS_WATCHDOG_CTRL_ENABLE(1);
+	reload_value = reload_us & 0x00FFFFFF;
 	feed_the_watchdog();
-	WATCHDOG_SET_CTRL = WATCHDOG_CTRL_ENABLE_MASK;
+	WATCHDOG_CTRL_SET = WATCHDOG_CTRL_ENABLE(1);
 }
+
 void feed_the_watchdog()
 {
-	WATCHDOG_LOAD=reload_value;
+	WATCHDOG_LOAD = reload_value;
 }
 
