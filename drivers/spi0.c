@@ -38,7 +38,7 @@ void configure_spi0()
 
 
 	const uint32_t pads_bank0_gpio_in = 
-	PADS_BANK0_GPIO0_OD(0) 
+	PADS_BANK0_GPIO0_OD(1) 
 	| PADS_BANK0_GPIO0_IE(1) 
 	| PADS_BANK0_GPIO0_DRIVE(0) 
 	| PADS_BANK0_GPIO0_PUE(0) 
@@ -73,13 +73,11 @@ void configure_spi0()
 	PADS_BANK0_GPIO( SPI0_RXD_LOC  ) = pads_bank0_gpio_in;
 
 	SPI0_SSPCR0 =
-		  SPI0_SSPCR0_SCR(14)
+		  SPI0_SSPCR0_SCR(15-1)
 		| SPI0_SSPCR0_SPH(MOTOROLA_CPHA)
 		| SPI0_SSPCR0_SPO(MOTOROLA_CPOL)
 		| SPI0_SSPCR0_FRF(0)
 		| SPI0_SSPCR0_DSS(DATA_BITS-1);
-
-	//spi0.sspcpsr = 150;
 
 	SPI0_SSPCR1 =
 		  SPI0_SSPCR1_SOD(0)
