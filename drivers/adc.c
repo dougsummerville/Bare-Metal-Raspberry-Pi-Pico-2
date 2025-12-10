@@ -14,9 +14,6 @@
 
 //CONFIGURATION OPTIONS
 
-//If not using the USB CDC Driver, uncomment the following line
-//#define CONFIGURE_USB_PLL 1
-
 //Select the analog pin(s) to be used by software
 #define USE_ADC_PIN_26
 #define USE_ADC_PIN_27
