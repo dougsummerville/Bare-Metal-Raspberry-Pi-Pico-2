@@ -60,7 +60,7 @@ static void _config_ref_clock()
 	//Clock to timers and tick generators
 	clocks.clk_ref_ctrl_clr =  CLOCKS_CLK_REF_CTRL_SRC_MASK;
 	clocks.clk_ref_ctrl_set =  CLOCKS_CLK_REF_CTRL_SRC(2); //XOSC
-	clocks.clk_ref_div = CLOCKS_CLK_REF_DIV_INT(12); //divide-by-12 for 1MHz
+	clocks.clk_ref_div = CLOCKS_CLK_REF_DIV_INT(1); //divide-by-1 for 12MHz
 }
 static void _config_sys_clock()
 {
